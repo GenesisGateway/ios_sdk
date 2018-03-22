@@ -46,11 +46,12 @@ class Request: NSObject {
     }
     
     func requestProtocolSelfInstance() -> RequestProtocol {
-        guard let selfInstance = self as? RequestProtocol else {
+        let selfInstance = self as? RequestProtocol
+        if selfInstance == nil {
             assert(false, "need extension of RequestProtocol for the child")
         }
         
-        return selfInstance
+        return selfInstance!
     }
     
     func callSuccessWithResponseString(responseString: String) {

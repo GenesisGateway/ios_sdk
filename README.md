@@ -1,6 +1,8 @@
 # Genesis iOS SDK
 >
 
+[![Build Status](https://img.shields.io/travis/GenesisGateway/ios_sdk.svg?style=flat)](https://travis-ci.org/GenesisGateway/ios_sdk)
+
 ## Table of Contents
 - [Requirements](#requirements)
 - [Installation](#installation)
