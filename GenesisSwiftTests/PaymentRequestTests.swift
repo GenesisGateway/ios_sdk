@@ -19,8 +19,9 @@ class PaymentRequestTests: XCTestCase {
     }
     
     func testProperties() {
+        let transactionTypes = [PaymentTransactionType(name: .authorize), PaymentTransactionType(name: .sale)]
         let billingAddress = PaymentAddress(firstName: "fixed.firstName", lastName: "fixed.lastName", address1: "fixed.address1", address2: "fixed.address2", zipCode: "fixed.zipCode", city: "fixed.city", state: "fixed.state", country: IsoCountryCodes.search(byName: "United States"))
-        sut = PaymentRequest(transactionId: "fixed.transactionId", amount: 1234.56, currency: Currencies().USD, customerEmail: "fixed.email", customerPhone: "123456789", billingAddress: billingAddress, transactionTypes: [.authorize, .sale], notificationUrl: "fixed.url")
+        sut = PaymentRequest(transactionId: "fixed.transactionId", amount: 1234.56, currency: Currencies().USD, customerEmail: "fixed.email", customerPhone: "123456789", billingAddress: billingAddress, transactionTypes: transactionTypes, notificationUrl: "fixed.url")
         
         XCTAssertEqual(sut.amount, 1234.56)
         XCTAssertEqual(sut.transactionId, "fixed.transactionId")
@@ -44,62 +45,68 @@ class PaymentRequestTests: XCTestCase {
     }
     
     func testValidation() {
+        var items = ["amount", "notificationUrl", "customerPhone", "transactionId", "customerEmail", "firstName", "lastName", "address1", "zipCode", "city", "country"]
+        
         let paymentAddress = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
         
-        sut = PaymentRequest(transactionId: "", amount: 0, currency: Currencies().EUR, customerEmail: "", customerPhone: "", billingAddress: paymentAddress, transactionTypes: [], notificationUrl: "")
+        sut = PaymentRequest(transactionId: "", amount: 0, currency: Currencies().EUR, customerEmail: "", customerPhone: "", billingAddress: paymentAddress, transactionTypes: [PaymentTransactionType(name: .sale)], notificationUrl: "")
         
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerPhoneError.localizedDescription)
-        
-        sut.customerPhone = "asdfgh123456"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerPhoneError.localizedDescription)
-        
-        sut.customerPhone = "123a456"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerPhoneError.localizedDescription)
-        
-        sut.customerPhone = "123456a"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerPhoneError.localizedDescription)
-        
-        sut.customerPhone = "12345678"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-        
-        sut.customerPhone = "+12345678"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-        
-        sut.customerPhone = "0012345678"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-        
-        sut.customerEmail = "mailmail"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-
-        sut.customerEmail = "mailmail.com"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-        
-        sut.customerEmail = "mail@mail.c"
-        validationWithExpectedError(errorDescription: GenesisValidationError.customerEmailError.localizedDescription)
-        
-        sut.customerEmail = "mail@mail.com"
-        validationWithExpectedError(errorDescription: GenesisValidationError.amountError.localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.amount = -1
-        validationWithExpectedError(errorDescription: GenesisValidationError.amountError.localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.amount = 0
-        validationWithExpectedError(errorDescription: GenesisValidationError.amountError.localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.amount = 10
-        validationWithExpectedError(errorDescription: GenesisValidationError.transactionIdError.localizedDescription)
-
-        sut.transactionId = "transactionId"
-        validationWithExpectedError(errorDescription: GenesisValidationError.transactionTypesError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
-        sut.transactionTypes = [PaymentTransactionType(name: .sale)]
-        validationWithExpectedError(errorDescription: GenesisValidationError.notificationUrlError.localizedDescription)
         
         sut.notificationUrl = "notificationUrl"
-        validationWithExpectedError(errorDescription: GenesisValidationError.notificationUrlError.localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.notificationUrl = "http://notificationUrl.com"
-        //from address error
-        validationWithExpectedError(errorDescription: GenesisValidationError.firstNameError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "asdfgh123456"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "123a456"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "123456a"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "12345678"
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "+12345678"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerPhone = "0012345678"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        
+        sut.transactionId = "transactionId"
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+ 
+        
+        sut.customerEmail = "mailmail"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+
+        sut.customerEmail = "mailmail.com"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerEmail = "mail@mail.c"
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        
+        sut.customerEmail = "mail@mail.com"
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
     }
 }

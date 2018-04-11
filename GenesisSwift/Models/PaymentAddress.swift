@@ -50,14 +50,14 @@ public class PaymentAddress {
     subscript(key: String) -> Any? {
         get {
             switch key {
-            case "firstName": return firstName
-            case "lastName": return lastName
-            case "address1": return address1
-            case "address2": return address2
-            case "zipCode": return zipCode
-            case "city": return city
-            case "state": return state
-            case "country": return country.alpha2
+            case FirstNameKey: return firstName
+            case LastNameKey: return lastName
+            case Address1Key: return address1
+            case Address2Key: return address2
+            case ZipCodeKey: return zipCode
+            case CityKey: return city
+            case StateKey: return state
+            case CountryKey: return country.alpha2
             default: return nil
             }
         }
@@ -75,28 +75,13 @@ extension PaymentAddress: GenesisDescriptionProtocol {
 //MARK: ValidateInputDataProtocol
 extension PaymentAddress: ValidateInputDataProtocol {
     public func isValidData() throws {
-        guard !firstName.isEmpty else {
-            throw GenesisValidationError.firstNameError
-        }
+        let requiredParameters = RequiredParameters.requiredParametersForAddress()
+        let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
         
-        guard !lastName.isEmpty else {
-            throw GenesisValidationError.lastNameError
-        }
-        
-        guard !address1.isEmpty else {
-            throw GenesisValidationError.address1Error
-        }
-        
-        guard !zipCode.isEmpty else {
-            throw GenesisValidationError.zipCodeError
-        }
-        
-        guard !city.isEmpty else {
-            throw GenesisValidationError.cityError
-        }
-        
-        guard !country.alpha2.isEmpty else {
-            throw GenesisValidationError.countryISOCodeError
+        do {
+            try validator.isValidAddress(address: self)
+        } catch {
+            throw error
         }
     }
 }
@@ -106,14 +91,14 @@ extension PaymentAddress: ValidateInputDataProtocol {
 extension PaymentAddress: GenesisXmlObjectProtocol {
     func propertyMap() -> ([String : String]) {
         return [
-            "firstName": "first_name",
-            "lastName": "last_name",
-            "address1": "address1",
-            "address2": "address2",
-            "zipCode": "zip_code",
-            "city": "city",
-            "state": "state",
-            "country": "country"]
+            FirstNameKey: "first_name",
+            LastNameKey: "last_name",
+            Address1Key: "address1",
+            Address2Key: "address2",
+            ZipCodeKey: "zip_code",
+            CityKey: "city",
+            StateKey: "state",
+            CountryKey: "country"]
     }
     
     func toXmlString() -> String {

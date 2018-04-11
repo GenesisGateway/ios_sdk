@@ -3,9 +3,9 @@
 //  GenesisSwift
 //
 
-import UIKit
+import Foundation
 
-class Reconcile: NSObject {
+class Reconcile {
     var uniqueId: String = ""
     
     init(uniqueId: String) {

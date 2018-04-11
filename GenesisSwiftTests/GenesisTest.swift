@@ -23,7 +23,7 @@ class GenesisTest: XCTestCase {
                                                address2: "address2",
                                                zipCode: "zipCode",
                                                city: "city",
-                                               state: "state",
+                                               state: "st",
                                                country: IsoCountryCodes.search(byName: "United States"))
 
         let paymentRequest = PaymentRequest(transactionId: "transactionId",
@@ -32,7 +32,7 @@ class GenesisTest: XCTestCase {
                                                customerEmail: "customerEmail@email.com",
                                                customerPhone: "1234567",
                                                billingAddress: paymentAddress,
-                                               transactionTypes: [.sale],
+                                               transactionTypes: [PaymentTransactionType(name: .sale)],
                                                notificationUrl: "https://example.com/notification")
         
         let credentials = Credentials(withUsername: "Username", andPassword: "Password")
@@ -114,7 +114,7 @@ extension GenesisTest: GenesisDelegate {
 
     }
     
-    func genesisValidationError(error: Error) {
+    func genesisValidationError(error: GenesisValidationError) {
         
     }
 }

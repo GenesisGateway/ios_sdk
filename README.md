@@ -7,6 +7,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
+- [Additional Usage](#additional-usage)
 
 ## Requirements
 
@@ -45,10 +46,6 @@ In your `Cartfile`:
 
 5. Click the + button in the top left corner to add a Copy Files build phase. Set the directory to Frameworks. Click the + button and add GenesisSwift.
 
-### Manually
-
-Download and drop ```GenesisSwift.framework``` in your project.
-
 ## Basic Usage
 
 ```swift
@@ -66,6 +63,9 @@ let paymentAddress = PaymentAddress(firstName: firstName,
                                        state: state,
                                        country: IsoCountryCodes.search(byName: "United States"))
 
+//PaymentTransactionType for Genesis
+let paymentTransactionType = PaymentTransactionType(name: .sale)
+
 //PaymentRequest for Genesis
 let paymentRequest = PaymentRequest(transactionId: transactionId,
                                        amount: amount.explicitConvertionToDecimal()!,
@@ -73,7 +73,7 @@ let paymentRequest = PaymentRequest(transactionId: transactionId,
                                        customerEmail: customerEmail,
                                        customerPhone: customerPhone,
                                        billingAddress: paymentAddress,
-                                       transactionTypes: [.sale],
+                                       transactionTypes: [paymentTransactionType],
                                        notificationUrl: notificationUrl)
 
 //Credentials for Genesis
@@ -122,13 +122,23 @@ extension YourViewController: GenesisDelegate {
         ...
     }
     
-    func genesisValidationError(error: Error) {
+    func genesisValidationError(error: GenesisValidationError) {
+        print(error.errorUserInfo)
         ...
     }
 }
 ```
 
 ## Additional Usage
+
+Set required parameters for transaction type
+
+```swift
+let paymentTransactionType = PaymentTransactionType(name: .idebitPayin)
+paymentTransactionType.customerAccountId = "customerAccountId"
+
+paymentRequest.transactionTypes = [paymentTransactionType]
+```
 
 Set usage or description
 
@@ -184,14 +194,23 @@ paymentRequest.riskParams = riskParams
 Check input data
 
 ```swift
+//This will check all setted data
 do {
     try paymentRequest.isValidData()
 } catch {
     print(error)
 }
 
+//Check address
 do {
     try paymentAddress.isValidData()
+} catch {
+    print(error)
+}
+
+//Check transaction type
+do {
+    try paymentTransactionType.isValidData()
 } catch {
     print(error)
 }

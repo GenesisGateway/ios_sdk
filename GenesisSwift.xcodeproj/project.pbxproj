@@ -22,10 +22,14 @@
 		2E6B8F80205AAAF700444D4B /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6B8F7F205AAAF700444D4B /* Response.swift */; };
 		2E6B8F82205AACF000444D4B /* WPFResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6B8F81205AACF000444D4B /* WPFResponse.swift */; };
 		2E6B8F85205ABADA00444D4B /* Reconcile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6B8F84205ABADA00444D4B /* Reconcile.swift */; };
+		2E6D66F22074ECCC003E4527 /* KlarnaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D66F12074ECCC003E4527 /* KlarnaItem.swift */; };
 		2E7E6A3B2056733700F7BAF0 /* ValidateInputDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7E6A3A2056733700F7BAF0 /* ValidateInputDataProtocol.swift */; };
 		2E9D2C4A204833240009FD06 /* GenesisTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D2C49204833240009FD06 /* GenesisTest.swift */; };
 		2ED287492040517800B530B6 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED287482040517800B530B6 /* Credentials.swift */; };
 		2ED2874B2040573F00B530B6 /* CredentialsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2874A2040573F00B530B6 /* CredentialsTest.swift */; };
+		2ED2D434206D10ED00C792C8 /* RequiredParametersValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2D433206D10ED00C792C8 /* RequiredParametersValidator.swift */; };
+		2EF574FD206BA0BD00C91DEA /* RequiredParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF574FC206BA0BD00C91DEA /* RequiredParameters.swift */; };
+		2EF57501206BCEB200C91DEA /* ParametersRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF57500206BCEB200C91DEA /* ParametersRegex.swift */; };
 		735425391F9F448100C78058 /* GenesisSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7354252F1F9F448100C78058 /* GenesisSwift.framework */; };
 		7354254C1F9F44F000C78058 /* GenesisXmlObjectProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7354254B1F9F44DE00C78058 /* GenesisXmlObjectProtocol.swift */; };
 		7354254D1F9F44F300C78058 /* DataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7354254A1F9F44DE00C78058 /* DataProtocol.swift */; };
@@ -75,10 +79,14 @@
 		2E6B8F7F205AAAF700444D4B /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		2E6B8F81205AACF000444D4B /* WPFResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFResponse.swift; sourceTree = "<group>"; };
 		2E6B8F84205ABADA00444D4B /* Reconcile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reconcile.swift; sourceTree = "<group>"; };
+		2E6D66F12074ECCC003E4527 /* KlarnaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KlarnaItem.swift; sourceTree = "<group>"; };
 		2E7E6A3A2056733700F7BAF0 /* ValidateInputDataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateInputDataProtocol.swift; sourceTree = "<group>"; };
 		2E9D2C49204833240009FD06 /* GenesisTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenesisTest.swift; sourceTree = "<group>"; };
 		2ED287482040517800B530B6 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		2ED2874A2040573F00B530B6 /* CredentialsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsTest.swift; sourceTree = "<group>"; };
+		2ED2D433206D10ED00C792C8 /* RequiredParametersValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredParametersValidator.swift; sourceTree = "<group>"; };
+		2EF574FC206BA0BD00C91DEA /* RequiredParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredParameters.swift; sourceTree = "<group>"; };
+		2EF57500206BCEB200C91DEA /* ParametersRegex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersRegex.swift; sourceTree = "<group>"; };
 		7354252F1F9F448100C78058 /* GenesisSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GenesisSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		735425331F9F448100C78058 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		735425381F9F448100C78058 /* GenesisSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenesisSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +169,18 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		2ED2D432206D099C00C792C8 /* Validation */ = {
+			isa = PBXGroup;
+			children = (
+				2E6B8F712057C20700444D4B /* GenesisValidationError.swift */,
+				2EF57500206BCEB200C91DEA /* ParametersRegex.swift */,
+				2EF574FC206BA0BD00C91DEA /* RequiredParameters.swift */,
+				2ED2D433206D10ED00C792C8 /* RequiredParametersValidator.swift */,
+				2E7E6A3A2056733700F7BAF0 /* ValidateInputDataProtocol.swift */,
+			);
+			path = Validation;
+			sourceTree = "<group>";
+		};
 		735425251F9F448100C78058 = {
 			isa = PBXGroup;
 			children = (
@@ -189,6 +209,7 @@
 				735425491F9F44BE00C78058 /* Private */,
 				735D00731F9F74DE00994C17 /* Protocols */,
 				7354255B1F9F490D00C78058 /* UI */,
+				2ED2D432206D099C00C792C8 /* Validation */,
 			);
 			path = GenesisSwift;
 			sourceTree = "<group>";
@@ -216,7 +237,6 @@
 			isa = PBXGroup;
 			children = (
 				7354255D1F9F492F00C78058 /* Extensions.swift */,
-				2E6B8F712057C20700444D4B /* GenesisValidationError.swift */,
 				735425511F9F458B00C78058 /* Models */,
 				7354254E1F9F44FA00C78058 /* Protocols */,
 			);
@@ -226,7 +246,6 @@
 		7354254E1F9F44FA00C78058 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				2E7E6A3A2056733700F7BAF0 /* ValidateInputDataProtocol.swift */,
 				7354254B1F9F44DE00C78058 /* GenesisXmlObjectProtocol.swift */,
 			);
 			path = Protocols;
@@ -255,6 +274,7 @@
 				7354255F1F9F497B00C78058 /* PaymentTransactionType.swift */,
 				2E6B8F84205ABADA00444D4B /* Reconcile.swift */,
 				7354256B1F9F4DDB00C78058 /* RiskParams.swift */,
+				2E6D66F12074ECCC003E4527 /* KlarnaItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -390,6 +410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				735425581F9F461800C78058 /* IsoCountries.swift in Sources */,
+				2ED2D434206D10ED00C792C8 /* RequiredParametersValidator.swift in Sources */,
 				735425601F9F497B00C78058 /* PaymentTransactionType.swift in Sources */,
 				735425531F9F45A300C78058 /* GenesisError.swift in Sources */,
 				2D13FAAC1FB45D6900E0E529 /* GenesisConfiguration.swift in Sources */,
@@ -407,9 +428,12 @@
 				2E6B8F80205AAAF700444D4B /* Response.swift in Sources */,
 				2E6B8F7C205AAA9E00444D4B /* ReconcileResponse.swift in Sources */,
 				2E6B8F722057C20700444D4B /* GenesisValidationError.swift in Sources */,
+				2E6D66F22074ECCC003E4527 /* KlarnaItem.swift in Sources */,
+				2EF574FD206BA0BD00C91DEA /* RequiredParameters.swift in Sources */,
 				2E6B8F78205AA17500444D4B /* ReconcileRequest.swift in Sources */,
 				7354254D1F9F44F300C78058 /* DataProtocol.swift in Sources */,
 				735425661F9F4D7300C78058 /* GenesisXmlParser.swift in Sources */,
+				2EF57501206BCEB200C91DEA /* ParametersRegex.swift in Sources */,
 				735425701F9F4E0800C78058 /* PaymentAddress.swift in Sources */,
 				2ED287492040517800B530B6 /* Credentials.swift in Sources */,
 				7354256C1F9F4DDB00C78058 /* RiskParams.swift in Sources */,

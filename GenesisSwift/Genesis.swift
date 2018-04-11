@@ -10,7 +10,7 @@ public protocol GenesisDelegate {
     func genesisDidEndWithSuccess()
     func genesisDidEndWithCancel()
     func genesisDidEndWithFailure(errorCode: GenesisError)
-    func genesisValidationError(error: Error)
+    func genesisValidationError(error: GenesisValidationError)
 }
 
 public class Genesis: NSObject {
@@ -111,7 +111,7 @@ public class Genesis: NSObject {
         do {
             try paymentRequest.isValidData()
         } catch {
-            delegate.genesisValidationError(error: error)
+            delegate.genesisValidationError(error: error as! GenesisValidationError)
             return nil
         }
         

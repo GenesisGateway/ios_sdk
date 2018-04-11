@@ -42,26 +42,37 @@ class PaymentAddressTests: XCTestCase {
     }
     
     func testValidation() {
+        var items = ["firstName", "lastName", "address1", "zipCode", "city", "country"]
+        
        sut = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
         
-        validationWithExpectedError(errorDescription: GenesisValidationError.firstNameError.localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.firstName = "firstName"
-        validationWithExpectedError(errorDescription: GenesisValidationError.lastNameError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.lastName = "lastName"
-        validationWithExpectedError(errorDescription: GenesisValidationError.address1Error.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.address1 = "address1"
-        validationWithExpectedError(errorDescription: GenesisValidationError.zipCodeError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.zipCode = "zipCode"
-        validationWithExpectedError(errorDescription: GenesisValidationError.cityError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
         sut.city = "city"
-        validationWithExpectedError(errorDescription: GenesisValidationError.countryISOCodeError.localizedDescription)
+        items.removeFirst()
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
         
         sut.country = IsoCountryCodes.search(byName: "United States")
+        items = ["state"]
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
+        
+        sut.state = "TX"
         validationWithExpectedError(errorDescription: nil)
     }
 }
