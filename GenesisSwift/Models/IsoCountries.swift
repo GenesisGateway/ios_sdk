@@ -25,7 +25,7 @@ extension IsoCountryInfo: Equatable {
 public final class IsoCountries {
     public class func flag(countryCode: String) -> String {
         var string = ""
-        var country = countryCode.uppercased()
+        let country = countryCode.uppercased()
         
         let regionalA = "🇦".unicodeScalars
         let letterA = "A".unicodeScalars

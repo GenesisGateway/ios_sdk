@@ -53,9 +53,9 @@ final class GenesisWebView: NSObject {
                     }
                 }
             }
-        }) { (error) in
-            self.genesisWebViewDelegate?.genesisWebViewDidEndWithFailure(errorCode: error)
-        }
+        }, failureHandler: { error in
+            self.genesisWebViewDelegate?.genesisWebViewDidEndWithFailure(errorCode: error ?? GenesisError(message: "error"))
+        })
     }
     
     func getErrorFromReconcileAndCallFailure() {
@@ -63,9 +63,9 @@ final class GenesisWebView: NSObject {
         reconcileRequest.execute(successHandler: { (response) in
             let reconcileResponse = response as! ReconcileResponse
             self.genesisWebViewDelegate?.genesisWebViewDidEndWithFailure(errorCode: reconcileResponse.errorCode!)
-        }) { (error) in
-            self.genesisWebViewDelegate?.genesisWebViewDidEndWithFailure(errorCode: error)
-        }
+        }, failureHandler: { error in
+            self.genesisWebViewDelegate?.genesisWebViewDidEndWithFailure(errorCode: error ?? GenesisError(message: "error"))
+        })
     }
 }
 

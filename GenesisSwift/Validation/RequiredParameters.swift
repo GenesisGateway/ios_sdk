@@ -20,8 +20,13 @@ let UsageKey = "usage"
 let PaymentDescriptionKey = "paymentDescription"
 let ShippingAddressKey = "shippingAddress"
 let RiskParamsKey = "riskParams"
+let ThreeDSV2ParamsKey = "threeDSV2Params"
 let DynamicDescriptorParamsKey = "dynamicDescriptorParams"
 let LifetimeKey = "lifetime"
+let PayLater = "payLater"
+let Crypto = "crypto"
+let ConsumerId = "consumerId"
+let Gaming = "gaming"
 let FirstNameKey = "firstName"
 let LastNameKey = "lastName"
 let Address1Key = "address1"
@@ -46,15 +51,27 @@ let QuantityKey = "quantity"
 let UnitPriceKey = "unitPrice"
 let TotalAmountKey = "totalAmount"
 
+enum PropertyKeys {
+
+    // 3DSv2 parameters' keys
+    static let Control = "control"
+    static let Purchase = "purchase"
+    static let Recurring = "recurring"
+    static let MerchantRisk = "merchant_risk"
+    static let CardHolderAccount = "card_holder_account"
+}
+
 class RequiredParameters {
     
     static func requiredParametersForRequest(paymentRequest: PaymentRequest) -> [String] {
         let set = NSMutableSet()
 
         for transactionType in paymentRequest.transactionTypes {
-            let transactionName = transactionType.name
-            
-            set.addObjects(from: requiredParametersForRequestWithTransactionName(transactionName: transactionName))
+            set.addObjects(from: requiredParametersForRequestWithTransactionName(transactionName: transactionType.name))
+        }
+        
+        if paymentRequest.consumerId?.isEmpty == false {
+            set.add(ConsumerId)
         }
         
         return set.allObjects as! [String]
@@ -69,8 +86,7 @@ class RequiredParameters {
                     RedeemTypeKey]
         case .citadelPayin:
             return [MerchantCustomerIdKey]
-        case .idebitPayin,
-             .instaDebitPayin:
+        case .idebitPayin, .instaDebitPayin:
             return [CustomerAccountIdKey]
         case .klarnaAuthorize:
             return [OrderTaxAmountKey,
@@ -93,8 +109,16 @@ class RequiredParameters {
     }
     
     static private func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {
-        let defaultRequiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey, ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, CustomerPhoneKey, BillingAddressKey, NotificationUrlKey]
-        
-        return defaultRequiredParameters
+        var requiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey,
+                                  ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, CustomerPhoneKey, BillingAddressKey, NotificationUrlKey]
+
+        switch transactionName {
+        case .authorize3d, .sale3d, .initRecurringSale3d:
+            requiredParameters.append(ThreeDSV2ParamsKey)
+        default:
+            break
+        }
+
+        return requiredParameters
     }
 }

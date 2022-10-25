@@ -8,6 +8,8 @@ import Foundation
 class ParametersRegex {
     static func regexForKey(key: String) -> String {
         switch key {
+        case ConsumerId:
+            return "^\\d{1,10}$"
         case TransactionIdKey,
              UsageKey,
              FirstNameKey,

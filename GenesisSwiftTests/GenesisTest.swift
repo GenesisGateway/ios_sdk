@@ -77,22 +77,6 @@ class GenesisTest: XCTestCase {
         
         genesis.back(animated: false)
     }
-    
-    func testAllRequiredPropertiesAreSetted() {
-        var genesis = self.genesis()
-        XCTAssertTrue(genesis.allRequiredPropertiesAreSetted())
-
-        genesis.configuration = nil
-        
-        XCTAssertNil(genesis.genesisWebViewWithConfiguration())
-        XCTAssertFalse(genesis.allRequiredPropertiesAreSetted())
-
-        genesis = self.genesis()
-        
-        genesis.paymentRequest = nil
-        XCTAssertFalse(genesis.allRequiredPropertiesAreSetted())
-    }
-    
 }
 
 // MARK: - GenesisDelegate

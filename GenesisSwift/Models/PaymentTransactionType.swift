@@ -63,14 +63,14 @@ public final class PaymentTransactionType {
     public var customerGender: String?//Customer gender
     public var items: [KlarnaItem]?//List with items
     
-    public var additionalParameters: [String:String] = [:]
+    public var additionalParameters: [String: String] = [:]
     
     public init(name: TransactionName) {
         self.name = name
     }
     
     func isDefault(_ isDefault: Bool) {
-        self._isDefault = isDefault ? "yes" : "no"
+        _isDefault = isDefault ? "yes" : "no"
     }
     
     func isDefault() -> String? {
@@ -78,77 +78,73 @@ public final class PaymentTransactionType {
     }
     
     public var description: String {
-        return self.toXmlString()
+        return toXmlString()
     }
     
     subscript(key: String) -> Any? {
-        get {
-            switch key {
-            case "name": return name
-            case "bin": return bin
-            case "tail": return tail
-            case "_isDefault": return _isDefault
-            case "expirationDate": return expirationDate
-            case SourceWalletIdKey: return sourceWalletId
-            case ProductNameKey: return productName
-            case ProductCategoryKey: return productCategory
-            case CardTypeKey: return cardType
-            case RedeemTypeKey: return redeemType
-            case MerchantCustomerIdKey: return merchantCustomerId
-            case CustomerAccountIdKey: return customerAccountId
-            case "productCode": return productCode
-            case "productNum": return productNum
-            case "productDesc": return productDesc
-            case "voucherNumber": return voucherNumber
-            case OrderTaxAmountKey: return orderTaxAmount
-            case CustomerGenderKey: return customerGender
-            case ItemsKey: return items
-            case "additionalParameters": return additionalParameters
-            default: return nil
-            }
+        switch key {
+        case "name": return name
+        case "bin": return bin
+        case "tail": return tail
+        case "_isDefault": return _isDefault
+        case "expirationDate": return expirationDate
+        case SourceWalletIdKey: return sourceWalletId
+        case ProductNameKey: return productName
+        case ProductCategoryKey: return productCategory
+        case CardTypeKey: return cardType
+        case RedeemTypeKey: return redeemType
+        case MerchantCustomerIdKey: return merchantCustomerId
+        case CustomerAccountIdKey: return customerAccountId
+        case "productCode": return productCode
+        case "productNum": return productNum
+        case "productDesc": return productDesc
+        case "voucherNumber": return voucherNumber
+        case OrderTaxAmountKey: return orderTaxAmount
+        case CustomerGenderKey: return customerGender
+        case ItemsKey: return items
+        case "additionalParameters": return additionalParameters
+        default: return nil
         }
     }
 }
 
+// MARK: - ValidateInputDataProtocol
+
 extension PaymentTransactionType: ValidateInputDataProtocol {
+
     public func isValidData() throws {
         let requiredParameters = RequiredParameters.requiredParametersForTransactionType(transactionType: self)
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
-        
-        do {
-            try validator.isValidTransactionType(transactionType: self)
-        } catch {
-            throw error
-        }
+
+        try validator.isValidTransactionType(transactionType: self)
     }
 }
 
-// MARK: GenesisXmlObjectProtocol
+// MARK: - GenesisXmlObjectProtocol
+
 extension PaymentTransactionType: GenesisXmlObjectProtocol {
     
-    func propertyMap() -> ([String : String]) {
-        return [
-            "name": "name",
-            "bin": "bin",
-            "tail": "tail",
-            "_isDefault": "default",
-            "expirationDate": "expiration_date",
-            SourceWalletIdKey: "source_wallet_id",
-            ProductNameKey: "product_name",
-            ProductCategoryKey: "product_category",
-            CardTypeKey: "card_type",
-            RedeemTypeKey: "redeem_type",
-            MerchantCustomerIdKey: "merchant_customer_id",
-            CustomerAccountIdKey: "customer_account_id",
-            "productCode": "product_code",
-            "productNum": "product_num",
-            "productDesc": "product_desc",
-            "voucherNumber": "voucher_number",
-            OrderTaxAmountKey: "order_tax_amount",
-            CustomerGenderKey: "customer_gender",
-            ItemsKey: "items",
-            "marketplaceSellerInfo": "marketplace_seller_info"
-        ]
+    func propertyMap() -> [String : String] {
+        ["name": "name",
+        "bin": "bin",
+        "tail": "tail",
+        "_isDefault": "default",
+        "expirationDate": "expiration_date",
+        SourceWalletIdKey: "source_wallet_id",
+        ProductNameKey: "product_name",
+        ProductCategoryKey: "product_category",
+        CardTypeKey: "card_type",
+        RedeemTypeKey: "redeem_type",
+        MerchantCustomerIdKey: "merchant_customer_id",
+        CustomerAccountIdKey: "customer_account_id",
+        "productCode": "product_code",
+        "productNum": "product_num",
+        "productDesc": "product_desc",
+        "voucherNumber": "voucher_number",
+        OrderTaxAmountKey: "order_tax_amount",
+        CustomerGenderKey: "customer_gender",
+        ItemsKey: "items",
+        "marketplaceSellerInfo": "marketplace_seller_info"]
     }
     
     func toXmlString() -> String {

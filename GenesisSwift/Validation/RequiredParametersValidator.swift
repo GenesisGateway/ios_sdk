@@ -86,17 +86,21 @@ class RequiredParametersValidator {
     }
     
     private func catchErrorFor(parameter: String, withValue value: Any?) {
-        guard value != nil else {
+        guard let value = value as? AnyObject else {
             errorParameters.append(parameter)
             paths.append("\(path).\(parameter)")
             return
         }
         
         do {
-            try isValidValue(value: value! as AnyObject, forParameter: parameter)
+            try isValidValue(value, forParameter: parameter)
         } catch {
-            errorParameters += (error as! GenesisValidationError).parameters
-            for p in (error as! GenesisValidationError).paths {
+            guard let error = error as? GenesisValidationError else {
+                assertionFailure("Unexpected error type")
+                return
+            }
+            errorParameters += error.parameters
+            for p in error.paths {
                 paths.append("\(path).\(p)")
             }
         }
@@ -122,11 +126,15 @@ class RequiredParametersValidator {
         return true
     }
     
-    private func isValidValue(value: AnyObject, forParameter parameter: String) throws {
+    private func isValidValue(_ value: AnyObject, forParameter parameter: String) throws {
         let regex = ParametersRegex.regexForKey(key: parameter)
 
         if isURLParameter(parameter: parameter) {//URL
             guard isValidUrlString(string: value as! String) else {
+                throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
+            }
+        } else if parameter == ThreeDSV2ParamsKey {
+            guard let _ = value as? ThreeDSV2Params else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
         } else if value is String {//String
@@ -187,8 +195,8 @@ class RequiredParametersValidator {
             return
         } else if value is CurrencyInfo {//CurrencyInfo
             return
-        } else {//unknown
-            assert(false)
+        } else {
+            assertionFailure("Unknown value type")
         }
     }
     
