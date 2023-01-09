@@ -3,7 +3,7 @@
 //  GenesisSwift
 //
 
-import UIKit
+import Foundation
 
 public enum TransactionName: String {
     case authorize
@@ -64,6 +64,8 @@ public final class PaymentTransactionType {
     public var items: [KlarnaItem]?//List with items
     
     public var additionalParameters: [String: String] = [:]
+
+    public var managedRecurring: ManagedRecurringParams?
     
     public init(name: TransactionName) {
         self.name = name
@@ -74,11 +76,11 @@ public final class PaymentTransactionType {
     }
     
     func isDefault() -> String? {
-        return _isDefault
+        _isDefault
     }
     
     public var description: String {
-        return toXmlString()
+        toXmlString()
     }
     
     subscript(key: String) -> Any? {
@@ -103,6 +105,7 @@ public final class PaymentTransactionType {
         case CustomerGenderKey: return customerGender
         case ItemsKey: return items
         case "additionalParameters": return additionalParameters
+        case ManagedRecurringKey: return managedRecurring
         default: return nil
         }
     }
@@ -144,27 +147,30 @@ extension PaymentTransactionType: GenesisXmlObjectProtocol {
         OrderTaxAmountKey: "order_tax_amount",
         CustomerGenderKey: "customer_gender",
         ItemsKey: "items",
-        "marketplaceSellerInfo": "marketplace_seller_info"]
+        "marketplaceSellerInfo": "marketplace_seller_info",
+        ManagedRecurringKey: "managed_recurring"]
     }
     
     func toXmlString() -> String {
         var xmlString = "<transaction_type name=\"\(name.rawValue)\""
-        if (isDefault() != nil) {
+        if isDefault() != nil {
             xmlString += " default=\"\(isDefault() as Optional))\""
         }
         xmlString += ">"
-        for (key, value) in self.propertyMap() {
-            if (key != "name" && key != "_isDefault") {
+        for (key, value) in propertyMap() {
+            if key != "name" && key != "_isDefault" {
                 guard let varValue = self[key] else { continue }
                 
-                if varValue is Array<KlarnaItem> {
+                if varValue is [KlarnaItem] {
                     xmlString += "<items>"
-                    for item in varValue as! Array<KlarnaItem> {
+                    for item in varValue as! [KlarnaItem] {
                         xmlString += item.toXmlString()
                     }
                     xmlString += "</items>"
                 } else if varValue is Decimal {
                     xmlString += "<\(value)>" + String(describing: varValue as! Decimal) + "</\(value)>"
+                } else if let managedRecurringParams = varValue as? ManagedRecurringParams {
+                    xmlString += "<\(value)>\(managedRecurringParams.description())</\(value)>"
                 } else {
                     xmlString += "<\(value)>" + (varValue as! String) + "</\(value)>"
                 }

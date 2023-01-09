@@ -50,6 +50,7 @@ let ItemTypeKey = "itemType"
 let QuantityKey = "quantity"
 let UnitPriceKey = "unitPrice"
 let TotalAmountKey = "totalAmount"
+let ManagedRecurringKey = "managedRecurring"
 
 enum PropertyKeys {
 
@@ -61,20 +62,20 @@ enum PropertyKeys {
     static let CardHolderAccount = "card_holder_account"
 }
 
-class RequiredParameters {
+enum RequiredParameters {
     
     static func requiredParametersForRequest(paymentRequest: PaymentRequest) -> [String] {
-        let set = NSMutableSet()
+        var set = Set<String>()
 
         for transactionType in paymentRequest.transactionTypes {
-            set.addObjects(from: requiredParametersForRequestWithTransactionName(transactionName: transactionType.name))
+            set.formUnion(requiredParametersForRequestWithTransactionName(transactionName: transactionType.name))
         }
         
         if paymentRequest.consumerId?.isEmpty == false {
-            set.add(ConsumerId)
+            set.insert(ConsumerId)
         }
         
-        return set.allObjects as! [String]
+        return Array(set)
     }
     
     static func requiredParametersForTransactionType(transactionType: PaymentTransactionType) -> [String] {
@@ -98,14 +99,11 @@ class RequiredParameters {
     }
     
     static func requiredParametersForKlarnaItem() -> [String] {
-        return [ItemTypeKey,
-                QuantityKey,
-                UnitPriceKey,
-                TotalAmountKey]
+        [ItemTypeKey, QuantityKey, UnitPriceKey, TotalAmountKey]
     }
     
     static func requiredParametersForAddress() -> [String] {
-        return [FirstNameKey, LastNameKey, Address1Key, ZipCodeKey, CityKey, CountryKey, StateKey]
+        [FirstNameKey, LastNameKey, CountryKey, StateKey]
     }
     
     static private func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {

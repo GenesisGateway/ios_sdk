@@ -6,18 +6,14 @@
 import XCTest
 @testable import GenesisSwift
 
-class PaymentAddressTests: XCTestCase {
-    
-    var sut: PaymentAddress!
-    
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
+final class PaymentAddressTests: XCTestCase {
+    private var sut: PaymentAddress!
+}
+
+// MARK: - Tests
+
+extension PaymentAddressTests {
+
     func testProperties() {
         sut = PaymentAddress(firstName: "fixed.firstName", lastName: "fixed.lastName", address1: "fixed.address1", address2: "fixed.address2", zipCode: "fixed.zipCode", city: "fixed.city", state: "fixed.state", country: IsoCountryCodes.search(byName: "fixed.country"))
         XCTAssertEqual(sut.firstName, "fixed.firstName")
@@ -30,21 +26,11 @@ class PaymentAddressTests: XCTestCase {
         XCTAssertTrue(sut.country.alpha2.isEmpty)
     }
     
-    func validationWithExpectedError(errorDescription: String?) {
-        do {
-            try sut.isValidData()
-        } catch {
-            XCTAssertEqual(error.localizedDescription, errorDescription)
-            return
-        }
-        
-        XCTAssertNil(errorDescription)
-    }
-    
     func testValidation() {
-        var items = ["firstName", "lastName", "address1", "zipCode", "city", "country"]
+        var items = ["firstName", "lastName", "country"]
         
-       sut = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
+       sut = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "",
+                            country: IsoCountryCodes.search(byName: "fixed.country"))
         
         validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
         
@@ -54,18 +40,15 @@ class PaymentAddressTests: XCTestCase {
         
         sut.lastName = "lastName"
         items.removeFirst()
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
         
         sut.address1 = "address1"
-        items.removeFirst()
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
         
         sut.zipCode = "zipCode"
-        items.removeFirst()
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameters(items, [""]).localizedDescription)
+        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
         
         sut.city = "city"
-        items.removeFirst()
         validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(items.first!, "").localizedDescription)
         
         sut.country = IsoCountryCodes.search(byName: "United States")
@@ -77,3 +60,16 @@ class PaymentAddressTests: XCTestCase {
     }
 }
 
+private extension PaymentAddressTests {
+
+    func validationWithExpectedError(errorDescription: String?) {
+        do {
+            try sut.isValidData()
+        } catch {
+            XCTAssertEqual(error.localizedDescription, errorDescription)
+            return
+        }
+
+        XCTAssertNil(errorDescription)
+    }
+}

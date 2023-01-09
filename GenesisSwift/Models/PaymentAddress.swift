@@ -30,10 +30,10 @@ public class PaymentAddress {
 ///
     public init(firstName: String,
                 lastName: String,
-                address1: String,
-                address2: String?,
-                zipCode: String,
-                city: String,
+                address1: String = "",
+                address2: String? = nil,
+                zipCode: String = "",
+                city: String = "",
                 state: String?,
                 country: IsoCountryInfo) {
         
@@ -105,7 +105,7 @@ extension PaymentAddress: GenesisXmlObjectProtocol {
         var xmlString = ""
         for (key, value) in self.propertyMap() {
             guard let varValue = self[key] else { continue }
-            xmlString += "<\(value)>" + String(describing:varValue) + "</\(value)>"
+            xmlString += "<\(value)>" + String(describing: varValue) + "</\(value)>"
         }
         return xmlString
     }

@@ -26,8 +26,8 @@ extension XMLConvertable {
 
     func toXML(name: String, value: String?) -> String {
         guard let value = value, !value.isEmpty else { return "" }
-       let xml = "<\(name)>" + value + "</\(name)>"
-       return xml
-   }
+        let xml = "<\(name)>" + value + "</\(name)>"
+        return xml
+    }
 }
 

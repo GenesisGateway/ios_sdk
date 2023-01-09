@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "GenesisSwift"
-  s.version      = "1.2.0"
+  s.version      = "1.3.0"
   s.summary      = "iOS Genesis Payment Gateway"
   s.description  = "The iOS Genesis Payment Gateway Swift SDK."
   s.homepage     = "https://github.com/GenesisGateway/ios_sdk.git"

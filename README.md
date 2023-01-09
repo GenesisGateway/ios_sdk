@@ -191,6 +191,31 @@ riskParams.binPhone = "binPhone"
 paymentRequest.riskParams = riskParams
 ```
 
+How to use managed recurring in WPF API
+
+```swift
+let firstDate = Date().dateByAdding(1, to: .month)
+let automaticManagedRecurrring = ManagedRecurringParams.Automatic(period: 22, interval: .days, firstDate: firstDate,
+                                                                  timeOfDay: 5, amount: 500, maxCount: 10)
+let managedRecurring = ManagedRecurringParams(mode: .automatic(automaticManagedRecurrring))
+let transactionType = PaymentTransactionType(name: .initRecurringSale3d)
+transactionType.managedRecurring = managedRecurring
+
+paymentRequest.transactionTypes = [transactionType]
+```
+
+How to use managed recurring for Indian cards in WPF API (provided data is exemplary, do fill in your specific data per agreement)
+
+```swift
+let manualManagedRecurrring = ManagedRecurringParams.Manual(paymentType: .subsequent, amountType: .fixed, frequency: .weekly,                                                                                                                              registrationReferenceNumber: "123434",
+                                                            maxAmount: 200, maxCount: 99, validated: true)
+let managedRecurring = ManagedRecurringParams(mode: .manual(manualManagedRecurrring))
+let transactionType = PaymentTransactionType(name: .initRecurringSale)
+transactionType.managedRecurring = managedRecurring
+
+paymentRequest.transactionTypes = [transactionType]
+```
+ 
 In order to enforce the 3DSecure v2 authentication protocol, set the 3DSv2 parameters for the following transaction types: Authorize3d, Sale3d, and InitRecurringSale3d.
 
 ```swift

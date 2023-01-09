@@ -36,6 +36,7 @@
 		56AFF29D28FD784F000C6720 /* ControlParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29728FD784F000C6720 /* ControlParams.swift */; };
 		56AFF29E28FD784F000C6720 /* PurchaseParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29828FD784F000C6720 /* PurchaseParams.swift */; };
 		56AFF29F28FD784F000C6720 /* ThreeDSV2Params.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29928FD784F000C6720 /* ThreeDSV2Params.swift */; };
+		56D38CFC2965B276007ECE0C /* ManagedRecurringParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D38CFB2965B276007ECE0C /* ManagedRecurringParams.swift */; };
 		735425391F9F448100C78058 /* GenesisSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7354252F1F9F448100C78058 /* GenesisSwift.framework */; };
 		7354254C1F9F44F000C78058 /* GenesisXmlObjectProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7354254B1F9F44DE00C78058 /* GenesisXmlObjectProtocol.swift */; };
 		7354254D1F9F44F300C78058 /* DataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7354254A1F9F44DE00C78058 /* DataProtocol.swift */; };
@@ -99,6 +100,7 @@
 		56AFF29728FD784F000C6720 /* ControlParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlParams.swift; sourceTree = "<group>"; };
 		56AFF29828FD784F000C6720 /* PurchaseParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseParams.swift; sourceTree = "<group>"; };
 		56AFF29928FD784F000C6720 /* ThreeDSV2Params.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreeDSV2Params.swift; sourceTree = "<group>"; };
+		56D38CFB2965B276007ECE0C /* ManagedRecurringParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedRecurringParams.swift; sourceTree = "<group>"; };
 		7354252F1F9F448100C78058 /* GenesisSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GenesisSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		735425331F9F448100C78058 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		735425381F9F448100C78058 /* GenesisSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenesisSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -295,6 +297,7 @@
 				735425521F9F45A300C78058 /* GenesisError.swift */,
 				735425571F9F461800C78058 /* IsoCountries.swift */,
 				735D00741F9F790C00994C17 /* IsoCountryCodes.swift */,
+				56D38CFB2965B276007ECE0C /* ManagedRecurringParams.swift */,
 				7354256F1F9F4E0700C78058 /* PaymentAddress.swift */,
 				735425711F9F4E2400C78058 /* PaymentRequest.swift */,
 				7354255F1F9F497B00C78058 /* PaymentTransactionType.swift */,
@@ -469,6 +472,7 @@
 				2ED287492040517800B530B6 /* Credentials.swift in Sources */,
 				7354256C1F9F4DDB00C78058 /* RiskParams.swift in Sources */,
 				2D3908511FAD06F800CE5BCE /* Currency.swift in Sources */,
+				56D38CFC2965B276007ECE0C /* ManagedRecurringParams.swift in Sources */,
 				735425721F9F4E2500C78058 /* PaymentRequest.swift in Sources */,
 				2E6B8F7A205AA57C00444D4B /* WPFRequest.swift in Sources */,
 				56AFF29E28FD784F000C6720 /* PurchaseParams.swift in Sources */,
@@ -635,7 +639,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GenesisSwift/App/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emerchantpay.GenesisSwift;
@@ -666,7 +670,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GenesisSwift/App/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emerchantpay.GenesisSwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
