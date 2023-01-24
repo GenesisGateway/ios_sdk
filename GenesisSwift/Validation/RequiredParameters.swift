@@ -51,6 +51,8 @@ let QuantityKey = "quantity"
 let UnitPriceKey = "unitPrice"
 let TotalAmountKey = "totalAmount"
 let ManagedRecurringKey = "managedRecurring"
+let RecurringTypeKey = "recurringType"
+let RecurringCategoryKey = "recurringCategory"
 
 enum PropertyKeys {
 
@@ -110,11 +112,17 @@ enum RequiredParameters {
         var requiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey,
                                   ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, CustomerPhoneKey, BillingAddressKey, NotificationUrlKey]
 
-        switch transactionName {
-        case .authorize3d, .sale3d, .initRecurringSale3d:
+        if [.authorize3d, .sale3d, .initRecurringSale3d].contains(transactionName) {
             requiredParameters.append(ThreeDSV2ParamsKey)
-        default:
-            break
+        }
+
+        if [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) {
+            debugPrint(transactionName)
+            requiredParameters.append(RecurringTypeKey)
+        }
+
+        if [.initRecurringSale, .initRecurringSale3d].contains(transactionName) {
+            requiredParameters.append(RecurringCategoryKey)
         }
 
         return requiredParameters

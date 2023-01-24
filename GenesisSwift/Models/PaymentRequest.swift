@@ -26,6 +26,8 @@ public final class PaymentRequest {
     public var gaming: Bool?
     public var consumerId: String?
     public var threeDSV2Params: ThreeDSV2Params?
+    public var recurringType: RecurringType?
+    public var recurringCategory: RecurringCategory?
 
     public var additionalParameters: [String: String] = [:]
 
@@ -122,6 +124,8 @@ public final class PaymentRequest {
         case Crypto: return crypto
         case Gaming: return gaming
         case ConsumerId: return consumerId
+        case RecurringTypeKey: return recurringType
+        case RecurringCategoryKey: return recurringCategory
         default: return nil
         }
     }
@@ -153,7 +157,9 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
         ConsumerId: "consumer_id",
         RiskParamsKey: "risk_params",
         ThreeDSV2ParamsKey: "threeds_v2_params",
-        DynamicDescriptorParamsKey: "dynamic_descriptor_params"]
+        DynamicDescriptorParamsKey: "dynamic_descriptor_params",
+        RecurringTypeKey: "recurring_type",
+        RecurringCategoryKey: "recurring_category"]
     }
 
     func toXmlString() -> String {

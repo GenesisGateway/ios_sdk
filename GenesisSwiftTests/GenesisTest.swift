@@ -34,6 +34,8 @@ class GenesisTest: XCTestCase {
                                                billingAddress: paymentAddress,
                                                transactionTypes: [PaymentTransactionType(name: .sale)],
                                                notificationUrl: "https://example.com/notification")
+
+        paymentRequest.recurringType = RecurringType(type: .managed)
         
         let credentials = Credentials(withUsername: "Username", andPassword: "Password")
         

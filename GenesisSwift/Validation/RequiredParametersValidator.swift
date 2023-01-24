@@ -195,8 +195,12 @@ class RequiredParametersValidator {
             return
         } else if value is CurrencyInfo {//CurrencyInfo
             return
+        } else if value is RecurringType {//RecurringType
+            return
+        } else if value is RecurringCategory {//RecurringCategory
+            return
         } else {
-            assertionFailure("Unknown value type")
+            assertionFailure("Unknown value type for \(parameter)")
         }
     }
     

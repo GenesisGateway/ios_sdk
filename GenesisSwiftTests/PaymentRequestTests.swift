@@ -48,6 +48,8 @@ extension PaymentRequestTests {
         sut = PaymentRequest(transactionId: "", amount: 0, currency: Currencies().EUR, customerEmail: "", customerPhone: "", billingAddress: paymentAddress, transactionTypes: [PaymentTransactionType(name: .sale)], notificationUrl: "")
         sut.consumerId = "asdasdsadasasdasda"
 
+        sut.recurringType = RecurringType(type: .subsequent)
+
         validationWithExpectedErrorForParameters(items)
 
         sut.amount = -1
@@ -121,6 +123,7 @@ extension PaymentRequestTests {
         sut.notificationUrl = "https://google.com"
         sut.billingAddress.state = "NY"
         sut.threeDSV2Params = nil
+        sut.recurringType = RecurringType(type: .subsequent)
 
         sut.transactionTypes = [PaymentTransactionType(name: .authorize)]
         XCTAssertNoThrow(try sut.isValidData())
@@ -138,6 +141,7 @@ extension PaymentRequestTests {
         XCTAssertNoThrow(try sut.isValidData())
         sut.threeDSV2Params = nil
 
+        sut.recurringCategory = RecurringCategory(category: .subscription)
         sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale)]
         XCTAssertNoThrow(try sut.isValidData())
         sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale3d)]
@@ -338,6 +342,43 @@ extension PaymentRequestTests {
         } else {
             XCTFail("No 'managed_recurring' tag found")
         }
+    }
+
+    func testRecurringType() {
+        let transactionTypes = [PaymentTransactionType(name: .authorize),
+                                PaymentTransactionType(name: .sale)]
+
+        sut = PaymentRequest(transactionId: "fixed.transactionId",
+                             amount: 1234.56,
+                             currency: Currencies().USD,
+                             customerEmail: "fixed.email",
+                             customerPhone: "123456789",
+                             billingAddress: createPaymentAddress(),
+                             transactionTypes: transactionTypes,
+                             notificationUrl: "fixed.url")
+
+        sut.recurringType = RecurringType(type: .managed)
+
+        let xml = sut.toXmlString()
+        XCTAssertEqual("managed", xmlValue(inTag: "recurring_type", from: xml))
+    }
+
+    func testRecurringCategory() {
+        let transactionTypes = [PaymentTransactionType(name: .initRecurringSale)]
+
+        sut = PaymentRequest(transactionId: "fixed.transactionId",
+                             amount: 1234.56,
+                             currency: Currencies().USD,
+                             customerEmail: "fixed.email",
+                             customerPhone: "123456789",
+                             billingAddress: createPaymentAddress(),
+                             transactionTypes: transactionTypes,
+                             notificationUrl: "fixed.url")
+
+        sut.recurringCategory = RecurringCategory(category: .subscription)
+
+        let xml = sut.toXmlString()
+        XCTAssertEqual("subscription", xmlValue(inTag: "recurring_category", from: xml))
     }
 }
 
