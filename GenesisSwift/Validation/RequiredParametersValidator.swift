@@ -115,80 +115,64 @@ class RequiredParametersValidator {
     }
     
     private func isURLParameter(parameter: String) -> Bool {
-        return parameter == NotificationUrlKey || parameter == ReturnSuccessUrlKey || parameter == ReturnFailureUrlKey || parameter == ReturnCancelUrlKey
+        parameter == NotificationUrlKey ||
+        parameter == ReturnSuccessUrlKey ||
+        parameter == ReturnFailureUrlKey ||
+        parameter == ReturnCancelUrlKey
     }
     
     private func isValidUrlString(string: String) -> Bool {
         guard !string.isEmpty, let url = URL(string: string), url.scheme != nil, !(url.scheme?.isEmpty)!, url.host != nil, !((url.host?.isEmpty)!) else {
             return false
         }
-        
         return true
     }
     
     private func isValidValue(_ value: AnyObject, forParameter parameter: String) throws {
-        let regex = ParametersRegex.regexForKey(key: parameter)
+        let regex = ParametersRegex.regexForKey(parameter)
 
         if isURLParameter(parameter: parameter) {//URL
-            guard isValidUrlString(string: value as! String) else {
+            guard let url = value as? String, isValidUrlString(string: url) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
         } else if parameter == ThreeDSV2ParamsKey {
             guard let _ = value as? ThreeDSV2Params else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-        } else if value is String {//String
-            guard !(value as! String).isEmpty else {
+        } else if let string = value as? String {//String
+            guard !string.isEmpty else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-            
             if !regex.isEmpty {
-                guard evaluation(text: (value as! String), regex: regex) else {
+                guard evaluation(text: string, regex: regex) else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
-        } else if value is Decimal {//Decimal
+        } else if let decimal = value as? Decimal {//Decimal
             if parameter == AmountKey {
-                guard (value as! Decimal) > Decimal(0) else {
+                guard decimal > Decimal(0) else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
-            
-            guard (value as! Decimal) >= Decimal(0) else {
+            guard decimal >= Decimal(0) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-        } else if value is PaymentAddress {//PaymentAddress
-            do {
-                try (value as! PaymentAddress).isValidData()
-            } catch {
-                throw error
-            }
-        } else if value is IsoCountryInfo {//IsoCountryInfo
+        } else if let paymentAddress = value as? PaymentAddress {//PaymentAddress
+            try paymentAddress.isValidData()
+        } else if let isoCountryInfo = value as? IsoCountryInfo {//IsoCountryInfo
             if !regex.isEmpty {
-                guard evaluation(text: (value as! IsoCountryInfo).alpha2 , regex: regex) else {
+                guard evaluation(text: isoCountryInfo.alpha2 , regex: regex) else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
-        } else if value is Array<PaymentTransactionType> {//Array PaymentTransactionType
-            for transactionType in value as! Array<PaymentTransactionType> {
-                do {
-                    try transactionType.isValidData()
-                } catch {
-                    throw error
-                }
+        } else if let transactionTypes = value as? [PaymentTransactionType] {// [PaymentTransactionType]
+            for transactionType in transactionTypes {
+                try transactionType.isValidData()
             }
-        } else if value is Array<KlarnaItem> {//Array PaymentTransactionType
-            for item in value as! Array<KlarnaItem> {
-                do {
-                    try item.isValidData()
-                } catch {
-                    throw error
-                }
+        } else if let klarmaItems = value as? [KlarnaItem] {// [KlarnaItem]
+            for item in klarmaItems {
+                try item.isValidData()
             }
-        } else if value is Array<String> {//Array String
-            assert(false)
-        } else if value is Array<Any> {//Array Any
-            assert(false)
         } else if value is RiskParams {//RiskParams
             return
         } else if value is Bool {//Bool

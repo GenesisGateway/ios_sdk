@@ -11,7 +11,7 @@ public final class PaymentRequest {
     public var amount: Decimal
     public var currency: CurrencyInfo
     public var customerEmail: String
-    public var customerPhone: String
+    public var customerPhone: String?
     public var notificationUrl: String
     public var billingAddress: PaymentAddress
     public var transactionTypes: [PaymentTransactionType]

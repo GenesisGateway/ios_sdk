@@ -72,9 +72,13 @@ enum RequiredParameters {
         for transactionType in paymentRequest.transactionTypes {
             set.formUnion(requiredParametersForRequestWithTransactionName(transactionName: transactionType.name))
         }
-        
+
+        // these parameters are not required to be present in the request, but they must be validated if they are
         if paymentRequest.consumerId?.isEmpty == false {
             set.insert(ConsumerId)
+        }
+        if paymentRequest.customerPhone?.isEmpty == false {
+            set.insert(CustomerPhoneKey)
         }
         
         return Array(set)
@@ -110,7 +114,7 @@ enum RequiredParameters {
     
     static private func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {
         var requiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey,
-                                  ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, CustomerPhoneKey, BillingAddressKey, NotificationUrlKey]
+                                  ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, BillingAddressKey, NotificationUrlKey]
 
         if [.authorize3d, .sale3d, .initRecurringSale3d].contains(transactionName) {
             requiredParameters.append(ThreeDSV2ParamsKey)

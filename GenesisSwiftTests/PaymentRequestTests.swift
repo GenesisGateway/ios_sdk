@@ -41,7 +41,7 @@ extension PaymentRequestTests {
     }
 
     func testValidation() {
-        var items = ["amount", "notificationUrl", "customerPhone", "consumerId", "transactionId", "customerEmail", "firstName", "lastName", "country"]
+        var items = ["amount", "notificationUrl", "consumerId", "transactionId", "customerEmail", "firstName", "lastName", "country"]
 
         let paymentAddress = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
 
@@ -69,23 +69,49 @@ extension PaymentRequestTests {
         items.removeFirst()
         validationWithExpectedErrorForParameters(items)
 
+        items.append("customerPhone")
+
+        sut.customerPhone = "+12"
+        validationWithExpectedErrorForParameters(items)
+
+        sut.customerPhone = "123"
+        validationWithExpectedErrorForParameters(items)
+
         sut.customerPhone = "asdfgh123456"
         validationWithExpectedErrorForParameters(items)
 
         sut.customerPhone = "123a456"
         validationWithExpectedErrorForParameters(items)
 
+        sut.customerPhone = "123+456"
+        validationWithExpectedErrorForParameters(items)
+
+        sut.customerPhone = "123 456"
+        validationWithExpectedErrorForParameters(items)
+
         sut.customerPhone = "123456a"
         validationWithExpectedErrorForParameters(items)
 
+        sut.customerPhone = "+123-456-789-0-123-456-789-0-1234"
+        validationWithExpectedErrorForParameters(items)
+
+        items.removeLast()
+        sut.customerPhone = ""
+        validationWithExpectedErrorForParameters(items)
+
+        sut.customerPhone = "+123"
+        validationWithExpectedErrorForParameters(items)
+
         sut.customerPhone = "12345678"
-        items.removeFirst()
         validationWithExpectedErrorForParameters(items)
 
         sut.customerPhone = "+12345678"
         validationWithExpectedErrorForParameters(items)
 
         sut.customerPhone = "0012345678"
+        validationWithExpectedErrorForParameters(items)
+
+        sut.customerPhone = "+123-456-789-0-123-456-789-0-123"
         validationWithExpectedErrorForParameters(items)
 
         sut.consumerId = "12345678900"

@@ -5,8 +5,9 @@
 
 import Foundation
 
-class ParametersRegex {
-    static func regexForKey(key: String) -> String {
+enum ParametersRegex {
+
+    static func regexForKey(_ key: String) -> String {
         switch key {
         case ConsumerId:
             return "^\\d{1,10}$"
@@ -26,7 +27,7 @@ class ParametersRegex {
         case CustomerEmailKey:
             return "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         case CustomerPhoneKey:
-            return "^[0-9\\+]{1,}[0-9\\-]{3,15}$"
+            return "^[0-9\\+][0-9\\-]{3,31}$"
         default:
             return ""
         }
