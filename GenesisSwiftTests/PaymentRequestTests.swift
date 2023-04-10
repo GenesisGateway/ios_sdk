@@ -370,6 +370,37 @@ extension PaymentRequestTests {
         }
     }
 
+    func testApplePayType() {
+        let transactionTypes = [PaymentTransactionType(name: .applePay)]
+
+        sut = PaymentRequest(transactionId: "fixed.transactionId",
+                             amount: 1234.56,
+                             currency: Currencies().USD,
+                             customerEmail: "fixed.email",
+                             customerPhone: "123456789",
+                             billingAddress: createPaymentAddress(),
+                             transactionTypes: transactionTypes,
+                             notificationUrl: "fixed.url")
+
+        sut.paymentSubtype = PaymentSubtype(type: .authorize)
+        sut.paymentToken = "Encrypted Payment Token"
+        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: Date.distantFuture, eventOrganizerId: "123456", eventId: "1234", dateOfOrder: Date.distantPast, deliveryDate: Date(), nameOfTheSupplier: "EMP")
+        sut.birthDate = Date(timeIntervalSince1970: 12345678)
+        sut.documentId = "12412525"
+        sut.remoteIp = "212.168.2.1"
+        sut.dynamicDescriptorParams = DynamicDescriptorParams(merchantName: "Name", merchantCity: "Sofia", subMerchantId: "1234567")
+
+        let xml = sut.toXmlString()
+
+        XCTAssertEqual("authorize", xmlValue(inTag: "payment_subtype", from: xml))
+        XCTAssertNotNil(xmlValue(inTag: "payment_token", from: xml))
+        XCTAssertNotNil(xmlValue(inTag: "business_attributes", from: xml))
+        XCTAssertNotNil(xmlValue(inTag: "birth_date", from: xml))
+        XCTAssertEqual("12412525", xmlValue(inTag: "document_id", from: xml))
+        XCTAssertEqual("212.168.2.1", xmlValue(inTag: "remote_ip", from: xml))
+        XCTAssertNotNil(xmlValue(inTag: "dynamic_descriptor_params", from: xml))
+    }
+
     func testRecurringType() {
         let transactionTypes = [PaymentTransactionType(name: .authorize),
                                 PaymentTransactionType(name: .sale)]

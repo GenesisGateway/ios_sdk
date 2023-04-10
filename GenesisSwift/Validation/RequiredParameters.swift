@@ -54,6 +54,23 @@ let ManagedRecurringKey = "managedRecurring"
 let RecurringTypeKey = "recurringType"
 let RecurringCategoryKey = "recurringCategory"
 
+let PaymentTokenKey = "paymentToken"
+let PaymentSubtypeKey = "paymentSubtype"
+let BirthDateKey = "birthDate"
+let RemoteIpKey = "remoteIp"
+let DocumentIdKey = "documentId"
+let BusinessAttributesKey = "businessAttributes"
+let EventStartDateKey = "eventStartDate"
+let EventEndDateKey = "eventEndDate"
+let EventOrganizerIdKey = "eventOrganizerId"
+let EventIdKey = "eventId"
+let DateOfOrderKey = "dateOfOrder"
+let DeliveryDateKey = "deliveryDate"
+let NameOfTheSupplierKey = "nameOfTheSupplier"
+let MerchantNameKey = "merchantName"
+let MerchantCityKey = "merchantCity"
+let SubMerchantIdKey = "subMerchantId"
+
 enum PropertyKeys {
 
     // 3DSv2 parameters' keys
@@ -127,6 +144,10 @@ enum RequiredParameters {
 
         if [.initRecurringSale, .initRecurringSale3d].contains(transactionName) {
             requiredParameters.append(RecurringCategoryKey)
+        }
+
+        if [.applePay].contains(transactionName) {
+            requiredParameters.append(contentsOf: [PaymentTokenKey, PaymentSubtypeKey, BirthDateKey, RemoteIpKey, DocumentIdKey, BusinessAttributesKey])
         }
 
         return requiredParameters

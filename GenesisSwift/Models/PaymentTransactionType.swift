@@ -38,6 +38,7 @@ public enum TransactionName: String {
     case containerStore = "container_store"
     case neosurf
     case klarnaAuthorize = "klarna_authorize"
+    case applePay = "apple_pay"
 }
 
 public final class PaymentTransactionType {

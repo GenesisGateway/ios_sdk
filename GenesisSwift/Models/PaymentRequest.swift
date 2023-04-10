@@ -28,6 +28,13 @@ public final class PaymentRequest {
     public var threeDSV2Params: ThreeDSV2Params?
     public var recurringType: RecurringType?
     public var recurringCategory: RecurringCategory?
+    public var paymentSubtype: PaymentSubtype?
+    public var paymentToken: String?
+    public var birthDate: Date?
+    public var documentId: String?
+    public var remoteIp: String?
+    public var businessAttributes: BusinessAttributes?
+    public var dynamicDescriptorParams: DynamicDescriptorParams?
 
     public var additionalParameters: [String: String] = [:]
 
@@ -42,20 +49,6 @@ public final class PaymentRequest {
         }
     }
 
-    var merchantName: String? {
-        didSet {
-            assert(oldValue == nil, "Variable merchantName can be set only once!")
-            dynamicDescriptorParams = DynamicDescriptorParams(merchantName: merchantName, merchantCity: merchantCity)
-        }
-    }
-
-    var merchantCity: String? {
-        didSet {
-            assert(oldValue == nil, "Variable merchantCity can be set only once!")
-            dynamicDescriptorParams = DynamicDescriptorParams(merchantName: merchantName, merchantCity: merchantCity)
-        }
-    }
-
     public var requires3DS: Bool {
         // the request requires 3DS if any of its specified types require it
         let types3DS: Set<TransactionName> = [.sale3d, .authorize3d, .initRecurringSale3d]
@@ -66,8 +59,6 @@ public final class PaymentRequest {
         }
         return false
     }
-
-    private var dynamicDescriptorParams: DynamicDescriptorParams?
 
     /// Default initialization
     ///
@@ -126,6 +117,12 @@ public final class PaymentRequest {
         case ConsumerId: return consumerId
         case RecurringTypeKey: return recurringType
         case RecurringCategoryKey: return recurringCategory
+        case PaymentSubtypeKey: return paymentSubtype
+        case PaymentTokenKey: return paymentToken
+        case BirthDateKey: return birthDate
+        case RemoteIpKey: return remoteIp
+        case DocumentIdKey: return documentId
+        case BusinessAttributesKey: return businessAttributes
         default: return nil
         }
     }
@@ -159,7 +156,13 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
         ThreeDSV2ParamsKey: "threeds_v2_params",
         DynamicDescriptorParamsKey: "dynamic_descriptor_params",
         RecurringTypeKey: "recurring_type",
-        RecurringCategoryKey: "recurring_category"]
+        RecurringCategoryKey: "recurring_category",
+        BusinessAttributesKey: "business_attributes",
+        PaymentSubtypeKey: "payment_subtype",
+        PaymentTokenKey: "payment_token",
+        BirthDateKey: "birth_date",
+        RemoteIpKey: "remote_ip",
+        DocumentIdKey: "document_id"]
     }
 
     func toXmlString() -> String {
