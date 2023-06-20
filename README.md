@@ -8,6 +8,7 @@
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Additional Usage](#additional-usage)
+- [Required parameters for transaction types](#required-parameters-for-transaction-types)
 
 ## Requirements
 
@@ -275,4 +276,50 @@ do {
 } catch {
     print(error)
 }
+```
+
+## Required parameters for transaction types
+
+- ApplePay
+
+```swift
+let paymentTransactionTypes = [PaymentTransactionType(name: .applePay)]
+let paymentSubtype = PaymentSubtype(type: .authorize)
+
+paymentRequest.transactionTypes = paymentTransactionTypes
+
+// paymentSubtype is required for ApplePay transactions
+paymentRequest.paymentSubtype = paymentSubtype
+```
+
+- Authorize, Authorize3d, Sale, Sale3d
+
+```swift
+let paymentTransactionTypes = [PaymentTransactionType(name: .authorize), PaymentTransactionType(name: .sale), ...]
+let recurringType = RecurringType(type: .subsequent)
+
+paymentRequest.transactionTypes = paymentTransactionTypes
+
+// recurringType is required for Authorize, Authorize3d, Sale, Sale3d transactions
+paymentRequest.recurringType = recurringType
+```
+
+- Init Recurring Sale, Init Recurring Sale3d
+
+```swift
+let paymentTransactionTypes = [PaymentTransactionType(name: .initRecurringSale), PaymentTransactionType(name: .initRecurringSale3d)]
+let recurringCategory = RecurringCategory(category: .subscription)
+
+paymentRequest.transactionTypes = paymentTransactionTypes
+
+// recurringCategory is required for Init Recurring Sale, Init Recurring Sale3d
+paymentRequest.recurringCategory = recurringCategory
+```
+
+- Reminders
+
+```swift
+// Reminders (up to 3) are required when Pay Later property is set to true
+paymentRequest.payLater = true
+paymentRequest.reminders = [Reminder(channel: .email, after: 30), Reminder(channel: .sms, after: 60)]
 ```

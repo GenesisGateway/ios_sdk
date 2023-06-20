@@ -35,7 +35,7 @@ extension PaymentRequestTests {
         XCTAssertEqual(sut.transactionTypes.first?.name, TransactionName.authorize)
         XCTAssertEqual(sut.notificationUrl, "fixed.url")
 
-        XCTAssertTrue(sut.payLater ?? false)
+        XCTAssertFalse(sut.payLater ?? true)
         XCTAssertTrue(sut.crypto ?? false)
         XCTAssertTrue(sut.gaming ?? false)
     }
@@ -50,12 +50,7 @@ extension PaymentRequestTests {
 
         sut.recurringType = RecurringType(type: .subsequent)
 
-        validationWithExpectedErrorForParameters(items)
-
         sut.amount = -1
-        validationWithExpectedErrorForParameters(items)
-
-        sut.amount = 0
         validationWithExpectedErrorForParameters(items)
 
         sut.amount = 10
@@ -401,6 +396,90 @@ extension PaymentRequestTests {
         XCTAssertNotNil(xmlValue(inTag: "dynamic_descriptor_params", from: xml))
     }
 
+    func testAllowedZeroAmount() {
+
+        sut = PaymentRequest(transactionId: "fixed.transactionId",
+                             amount: 0,
+                             currency: Currencies().USD,
+                             customerEmail: "email@example.com",
+                             customerPhone: "123456789",
+                             billingAddress: createPaymentAddress(),
+                             transactionTypes: [],
+                             notificationUrl: "https://testurl.com")
+
+        sut.paymentSubtype = PaymentSubtype(type: .authorize)
+        sut.paymentToken = "Encrypted Payment Token"
+        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: Date.distantFuture, eventOrganizerId: "123456", eventId: "1234", dateOfOrder: Date.distantPast, deliveryDate: Date(), nameOfTheSupplier: "EMP")
+        sut.birthDate = Date(timeIntervalSince1970: 12345678)
+        sut.documentId = "12412525"
+        sut.remoteIp = "212.168.2.1"
+        sut.dynamicDescriptorParams = DynamicDescriptorParams(merchantName: "Name", merchantCity: "Sofia", subMerchantId: "1234567")
+
+        // when amount is 0 an error is thrown
+        sut.transactionTypes = [PaymentTransactionType(name: .applePay)]
+        XCTAssertThrowsError(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale)]
+        sut.recurringCategory = RecurringCategory(category: .subscription)
+        XCTAssertThrowsError(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+
+        // transaction types which allows 0 amounts
+        sut.transactionTypes = [PaymentTransactionType(name: .sale)]
+        sut.recurringType = RecurringType(type: .initial)
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .sale3d)]
+        sut.threeDSV2Params = ThreeDSV2Params()
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .authorize)]
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .authorize3d)]
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
+    }
+
+    func testReminders() {
+        let transactionTypes = [PaymentTransactionType(name: .authorize),
+                                PaymentTransactionType(name: .sale)]
+
+        sut = PaymentRequest(transactionId: "fixed.transactionId",
+                             amount: 1234.56,
+                             currency: Currencies().USD,
+                             customerEmail: "customer@email.com",
+                             customerPhone: "123456789",
+                             billingAddress: createPaymentAddress(),
+                             transactionTypes: transactionTypes,
+                             notificationUrl: "https://google.com")
+
+        sut.recurringType = RecurringType(type: .managed)
+        sut.payLater = true
+        sut.reminders = [Reminder(channel: .email, after: 12)]
+
+        XCTAssertNoThrow(try sut.isValidData())
+
+        if let xmlElements = xmlValue(inTag: "reminders", from: sut.toXmlString()) {
+            XCTAssertEqual("email", xmlValue(inTag: "channel", from: xmlElements))
+            XCTAssertEqual("12", xmlValue(inTag: "after", from: xmlElements))
+        }
+
+        sut.payLater = false
+        sut.reminders = nil
+
+        XCTAssertNoThrow(try sut.isValidData())
+
+        XCTAssertNil(xmlValue(inTag: "reminders", from: sut.toXmlString()))
+        XCTAssertNil(xmlValue(inTag: "channel", from: sut.toXmlString()))
+        XCTAssertNil(xmlValue(inTag: "after", from: sut.toXmlString()))
+
+    }
+
     func testRecurringType() {
         let transactionTypes = [PaymentTransactionType(name: .authorize),
                                 PaymentTransactionType(name: .sale)]
@@ -448,7 +527,7 @@ private extension PaymentRequestTests {
                        address2: "fixed.address2",
                        zipCode: "fixed.zipCode",
                        city: "fixed.city",
-                       state: "fixed.state",
+                       state: "NY",
                        country: IsoCountryCodes.search(byName: "United States"))
     }
 
@@ -464,7 +543,7 @@ private extension PaymentRequestTests {
                                             billingAddress: createPaymentAddress(),
                                             transactionTypes: transactionTypes,
                                             notificationUrl: "fixed.url")
-        paymentRequest.payLater = true
+        paymentRequest.payLater = false
         paymentRequest.crypto = true
         paymentRequest.gaming = true
 

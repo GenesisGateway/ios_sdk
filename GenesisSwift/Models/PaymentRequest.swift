@@ -22,6 +22,7 @@ public final class PaymentRequest {
     public var usage: String?
     public var riskParams: RiskParams?
     public var payLater: Bool?
+    public var reminders: [Reminder]?
     public var crypto: Bool?
     public var gaming: Bool?
     public var consumerId: String?
@@ -43,7 +44,7 @@ public final class PaymentRequest {
     let returnCancelUrl = "https://WPFPaymentRequestCancelUrl"
 
     /// Number of minutes determining how long the WPF will be valid. Will be set to 30 minutes by default. Valid value ranges between 1 minute and 31 days given in minutes
-    var lifetime: Int? {
+    public var lifetime: Int? {
         didSet {
             assert(oldValue == nil, "Variable lifetime can be set only once!")
         }
@@ -52,12 +53,25 @@ public final class PaymentRequest {
     public var requires3DS: Bool {
         // the request requires 3DS if any of its specified types require it
         let types3DS: Set<TransactionName> = [.sale3d, .authorize3d, .initRecurringSale3d]
-        for type in transactionTypes {
-            if types3DS.contains(type.name) {
-                return true
-            }
-        }
-        return false
+        return isParameterRequired(for: types3DS)
+    }
+
+    public var requiresRecurringType: Bool {
+        // the request requires RecurringType if any of its specified types require it
+        let requiredTypes: Set<TransactionName> = [.sale, .sale3d, .authorize, .authorize3d]
+        return isParameterRequired(for: requiredTypes)
+    }
+
+    public var requiresRecurringCategory: Bool {
+        // the request requires RecurringCategory if any of its specified types require it
+        let requiredTypes: Set<TransactionName> = [.initRecurringSale, .initRecurringSale3d]
+        return isParameterRequired(for: requiredTypes)
+    }
+
+    public var requiresPaymentSubtype: Bool {
+        // the request requires PaymentSubtype if any of its specified types require it
+        let requiredTypes: Set<TransactionName> = [.applePay]
+        return isParameterRequired(for: requiredTypes)
     }
 
     /// Default initialization
@@ -111,7 +125,8 @@ public final class PaymentRequest {
         case ThreeDSV2ParamsKey: return threeDSV2Params
         case DynamicDescriptorParamsKey: return dynamicDescriptorParams
         case LifetimeKey: return lifetime
-        case PayLater: return payLater
+        case PayLaterKey: return payLater
+        case RemindersKey: return reminders
         case Crypto: return crypto
         case Gaming: return gaming
         case ConsumerId: return consumerId
@@ -148,7 +163,8 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
         ShippingAddressKey: "shipping_address",
         TransactionTypesKey: "transaction_types",
         LifetimeKey: "lifetime",
-        PayLater: "pay_later",
+        PayLaterKey: "pay_later",
+        RemindersKey: "reminders",
         Crypto: "crypto",
         Gaming: "gaming",
         ConsumerId: "consumer_id",
@@ -253,7 +269,7 @@ extension PaymentRequest: ValidateInputDataProtocol {
     }
 }
 
-extension Array where Element: PaymentTransactionType {
+extension Array where Element: GenesisXmlObjectProtocol {
 
     mutating func appendUpdateExclusive(element newAsset: Element) {
         append(newAsset)
@@ -264,11 +280,29 @@ private extension Array {
 
     func toXmlString() -> String {
         var xmlString = ""
-        for transactionType in self {
-            if let type = transactionType as? PaymentTransactionType {
-                xmlString += type.toXmlString()
+        for type in self {
+            switch type {
+            case let transactionType as PaymentTransactionType:
+                xmlString += transactionType.toXmlString()
+            case let reminder as Reminder:
+                xmlString += reminder.toXmlString()
+            default:
+                break
             }
         }
+
         return xmlString
+    }
+}
+
+private extension PaymentRequest {
+
+    func isParameterRequired(for requiredTypes: Set<TransactionName>) -> Bool {
+        for type in transactionTypes {
+            if requiredTypes.contains(type.name) {
+                return true
+            }
+        }
+        return false
     }
 }

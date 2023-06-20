@@ -11,6 +11,8 @@ class RequiredParametersValidator {
     var path = ""
     var errorParameters: [String] = []
     var paths: [String] = []
+
+    private var paymentRequest: PaymentRequest?
     
     init(withRequiredParameters parameters: [String]) {
         self.parameters = parameters
@@ -19,16 +21,14 @@ class RequiredParametersValidator {
     func isValidRequest(request: PaymentRequest) throws {
         path = "PaymentRequest"
         resetArrays()
+
+        paymentRequest = request
         
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: request[parameter])
         }
-        
-        do {
-            try throwErrorIfExists()
-        } catch {
-            throw error
-        }
+
+        try throwErrorIfExists()
     }
     
     func isValidAddress(address: PaymentAddress) throws {
@@ -42,12 +42,8 @@ class RequiredParametersValidator {
             
             catchErrorFor(parameter: parameter, withValue: address[parameter])
         }
-        
-        do {
-            try throwErrorIfExists()
-        } catch {
-            throw error
-        }
+
+        try throwErrorIfExists()
     }
     
     func isValidTransactionType(transactionType: PaymentTransactionType) throws {
@@ -57,12 +53,8 @@ class RequiredParametersValidator {
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: transactionType[parameter])
         }
-        
-        do {
-            try throwErrorIfExists()
-        } catch {
-            throw error
-        }
+
+        try throwErrorIfExists()
     }
     
     func isValidKlarnaItem(item: KlarnaItem) throws {
@@ -72,12 +64,19 @@ class RequiredParametersValidator {
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: item[parameter])
         }
-        
-        do {
-            try throwErrorIfExists()
-        } catch {
-            throw error
+
+        try throwErrorIfExists()
+    }
+
+    func isValidReminder(reminder: Reminder) throws {
+        path = "reminder"
+        resetArrays()
+
+        for parameter in parameters {
+            catchErrorFor(parameter: parameter, withValue: reminder[parameter])
         }
+
+        try throwErrorIfExists()
     }
     
     private func resetArrays() {
@@ -113,12 +112,23 @@ class RequiredParametersValidator {
             throw GenesisValidationError.wrongValueForParameters(errorParameters, paths)
         }
     }
+
+    private var isZeroAmountAllowed: Bool {
+        guard let transactionTypes = paymentRequest?.transactionTypes, !transactionTypes.isEmpty else { return false }
+
+        let transactionsNames: [TransactionName] = [.authorize, .authorize3d, .sale, .sale3d]
+        return transactionTypes.first { transactionsNames.contains($0.name) } != nil
+    }
     
     private func isURLParameter(parameter: String) -> Bool {
         parameter == NotificationUrlKey ||
         parameter == ReturnSuccessUrlKey ||
         parameter == ReturnFailureUrlKey ||
         parameter == ReturnCancelUrlKey
+    }
+
+    private func isIntervalWithinRange(_ interval: Int) -> Bool {
+        Ranges.monthInMinutes.contains(interval)
     }
     
     private func isValidUrlString(string: String) -> Bool {
@@ -139,6 +149,11 @@ class RequiredParametersValidator {
             guard let _ = value as? ThreeDSV2Params else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
+
+        } else if parameter == AfterKey {
+            guard let interval = value as? Int, isIntervalWithinRange(interval) else {
+                throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
+            }
         } else if let string = value as? String {//String
             guard !string.isEmpty else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
@@ -150,7 +165,7 @@ class RequiredParametersValidator {
             }
         } else if let decimal = value as? Decimal {//Decimal
             if parameter == AmountKey {
-                guard decimal > Decimal(0) else {
+                guard decimal > 0 || decimal == 0 && isZeroAmountAllowed else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
@@ -169,6 +184,10 @@ class RequiredParametersValidator {
             for transactionType in transactionTypes {
                 try transactionType.isValidData()
             }
+        } else if let reminders = value as? [Reminder] {// [Reminder]
+            for reminder in reminders {
+                try reminder.isValidData()
+            }
         } else if let klarmaItems = value as? [KlarnaItem] {// [KlarnaItem]
             for item in klarmaItems {
                 try item.isValidData()
@@ -183,6 +202,8 @@ class RequiredParametersValidator {
             return
         } else if value is RecurringCategory {//RecurringCategory
             return
+        } else if value is PaymentSubtype {//PaymentSubtype
+            return
         } else {
             assertionFailure("Unknown value type for \(parameter)")
         }
@@ -192,5 +213,11 @@ class RequiredParametersValidator {
         let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
         let evaluation = predicate.evaluate(with: text)
         return evaluation
+    }
+}
+
+private extension RequiredParametersValidator {
+    enum Ranges {
+        static let monthInMinutes = (1...44640)
     }
 }

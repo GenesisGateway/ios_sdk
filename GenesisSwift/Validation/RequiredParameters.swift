@@ -23,7 +23,7 @@ let RiskParamsKey = "riskParams"
 let ThreeDSV2ParamsKey = "threeDSV2Params"
 let DynamicDescriptorParamsKey = "dynamicDescriptorParams"
 let LifetimeKey = "lifetime"
-let PayLater = "payLater"
+let PayLaterKey = "payLater"
 let Crypto = "crypto"
 let ConsumerId = "consumerId"
 let Gaming = "gaming"
@@ -70,6 +70,9 @@ let NameOfTheSupplierKey = "nameOfTheSupplier"
 let MerchantNameKey = "merchantName"
 let MerchantCityKey = "merchantCity"
 let SubMerchantIdKey = "subMerchantId"
+let RemindersKey = "reminders"
+let ChannelKey = "channel"
+let AfterKey = "after"
 
 enum PropertyKeys {
 
@@ -96,6 +99,9 @@ enum RequiredParameters {
         }
         if paymentRequest.customerPhone?.isEmpty == false {
             set.insert(CustomerPhoneKey)
+        }
+        if paymentRequest.payLater == true {
+            set.insert(RemindersKey)
         }
         
         return Array(set)
@@ -128,6 +134,10 @@ enum RequiredParameters {
     static func requiredParametersForAddress() -> [String] {
         [FirstNameKey, LastNameKey, CountryKey, StateKey]
     }
+
+    static func requiredParametersForReminder() -> [String] {
+        [AfterKey]
+    }
     
     static private func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {
         var requiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey,
@@ -138,7 +148,6 @@ enum RequiredParameters {
         }
 
         if [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) {
-            debugPrint(transactionName)
             requiredParameters.append(RecurringTypeKey)
         }
 
@@ -147,7 +156,7 @@ enum RequiredParameters {
         }
 
         if [.applePay].contains(transactionName) {
-            requiredParameters.append(contentsOf: [PaymentTokenKey, PaymentSubtypeKey, BirthDateKey, RemoteIpKey, DocumentIdKey, BusinessAttributesKey])
+            requiredParameters.append(contentsOf: [PaymentSubtypeKey])
         }
 
         return requiredParameters
