@@ -9,24 +9,24 @@ enum ParametersRegex {
 
     static func regexForKey(_ key: String) -> String {
         switch key {
-        case ConsumerId:
+        case PropertyKeys.ConsumerId:
             return "^\\d{1,10}$"
-        case TransactionIdKey,
-             UsageKey,
-             FirstNameKey,
-             LastNameKey,
-             Address1Key,
-             Address2Key,
-             CityKey:
+        case PropertyKeys.TransactionIdKey,
+            PropertyKeys.UsageKey,
+            PropertyKeys.FirstNameKey,
+            PropertyKeys.LastNameKey,
+            PropertyKeys.Address1Key,
+            PropertyKeys.Address2Key,
+            PropertyKeys.CityKey:
             return "^.{1,255}$"
-        case CountryKey,
-             StateKey:
+        case PropertyKeys.CountryKey,
+            PropertyKeys.StateKey:
             return "^.{1,2}$"
-        case CustomerAccountIdKey:
+        case PropertyKeys.CustomerAccountIdKey:
             return "^.{1,13}$"
-        case CustomerEmailKey:
+        case PropertyKeys.CustomerEmailKey:
             return "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        case CustomerPhoneKey:
+        case PropertyKeys.CustomerPhoneKey:
             return "^[0-9\\+][0-9\\-]{3,31}$"
         default:
             return ""

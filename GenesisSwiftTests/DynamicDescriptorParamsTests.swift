@@ -6,43 +6,35 @@
 import XCTest
 @testable import GenesisSwift
 
-class DynamicDescriptorParamsTests: XCTestCase {
-    
-    var sut: DynamicDescriptorParams!
-    
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
+final class DynamicDescriptorParamsTests: XCTestCase {
+
+    private var sut: DynamicDescriptorParams!
+
     func testFullNames() {
         sut = DynamicDescriptorParams(merchantName: "fixed.name", merchantCity: "fixed.city", subMerchantId: nil)
         XCTAssertEqual(sut.merchantName, "fixed.name")
         XCTAssertEqual(sut.merchantCity, "fixed.city")
-        XCTAssertEqual(sut.subMerchantId, nil)
+        XCTAssertNil(sut.subMerchantId)
     }
-    
+
     func testOnlyName() {
         sut = DynamicDescriptorParams(merchantName: "fixed.name", merchantCity: nil, subMerchantId: nil)
         XCTAssertEqual(sut.merchantName, "fixed.name")
-        XCTAssertEqual(sut.merchantCity, nil)
-        XCTAssertEqual(sut.subMerchantId, nil)
+        XCTAssertNil(sut.merchantCity)
+        XCTAssertNil(sut.subMerchantId)
     }
-    
+
     func testOnlyCity() {
         sut = DynamicDescriptorParams(merchantName: nil, merchantCity: "fixed.city", subMerchantId: nil)
-        XCTAssertEqual(sut.merchantName, nil)
+        XCTAssertNil(sut.merchantName)
         XCTAssertEqual(sut.merchantCity, "fixed.city")
-        XCTAssertEqual(sut.subMerchantId, nil)
+        XCTAssertNil(sut.subMerchantId)
     }
 
     func testOnlySubmerchantId() {
         sut = DynamicDescriptorParams(merchantName: nil, merchantCity: nil, subMerchantId: "fixed.id")
-        XCTAssertEqual(sut.merchantName, nil)
-        XCTAssertEqual(sut.merchantCity, nil)
+        XCTAssertNil(sut.merchantName)
+        XCTAssertNil(sut.merchantCity)
         XCTAssertEqual(sut.subMerchantId, "fixed.id")
     }
 }

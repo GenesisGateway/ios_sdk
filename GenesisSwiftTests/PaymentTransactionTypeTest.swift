@@ -6,22 +6,14 @@
 import XCTest
 @testable import GenesisSwift
 
-class PaymentTransactionTypeTest: XCTestCase {
-    
-    var sut: PaymentTransactionType!
+final class PaymentTransactionTypeTest: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
+    private var sut: PaymentTransactionType!
+
     func testProperties() {
         let transactionName = TransactionName(rawValue: "sale")!
         sut = PaymentTransactionType(name: transactionName)
-        
-        XCTAssertEqual(sut.name, TransactionName.sale)
+
+        XCTAssertEqual(sut.name, .sale)
     }
 }

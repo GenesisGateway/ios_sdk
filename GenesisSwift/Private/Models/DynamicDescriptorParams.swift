@@ -9,31 +9,30 @@ public struct DynamicDescriptorParams {
     public let merchantName: String?
     public let merchantCity: String?
     public let subMerchantId: String?
-    
+
     subscript(key: String) -> Any? {
         switch key {
-        case MerchantNameKey: return merchantName
-        case MerchantCityKey: return merchantCity
-        case SubMerchantIdKey: return subMerchantId
+        case PropertyKeys.MerchantNameKey: return merchantName
+        case PropertyKeys.MerchantCityKey: return merchantCity
+        case PropertyKeys.SubMerchantIdKey: return subMerchantId
         default: return nil
         }
     }
 }
 
-//MARK: GenesisDescriptionProtocol
+// MARK: - GenesisDescriptionProtocol
 extension DynamicDescriptorParams: GenesisDescriptionProtocol {
     func description() -> String {
         toXmlString()
     }
-
 }
 
-// MARK: GenesisXmlObjectProtocol
+// MARK: - GenesisXmlObjectProtocol
 extension DynamicDescriptorParams: GenesisXmlObjectProtocol {
-    func propertyMap() -> [String : String] {
-        [MerchantNameKey: "mechant_name",
-         MerchantCityKey: "merchant_city",
-        SubMerchantIdKey: "sub_merchant_id"]
+    func propertyMap() -> [String: String] {
+        [PropertyKeys.MerchantNameKey: "mechant_name",
+         PropertyKeys.MerchantCityKey: "merchant_city",
+         PropertyKeys.SubMerchantIdKey: "sub_merchant_id"]
     }
 
     func toXmlString() -> String {
@@ -45,4 +44,3 @@ extension DynamicDescriptorParams: GenesisXmlObjectProtocol {
         return xmlString
     }
 }
-

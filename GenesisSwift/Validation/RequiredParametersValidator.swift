@@ -7,60 +7,60 @@ import Foundation
 
 class RequiredParametersValidator {
     let parameters: [String]
-    
+
     var path = ""
     var errorParameters: [String] = []
     var paths: [String] = []
 
     private var paymentRequest: PaymentRequest?
-    
+
     init(withRequiredParameters parameters: [String]) {
         self.parameters = parameters
     }
-    
+
     func isValidRequest(request: PaymentRequest) throws {
         path = "PaymentRequest"
         resetArrays()
 
         paymentRequest = request
-        
+
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: request[parameter])
         }
 
         try throwErrorIfExists()
     }
-    
+
     func isValidAddress(address: PaymentAddress) throws {
         path = "PaymentAddress"
         resetArrays()
-        
+
         for parameter in parameters {
-            if parameter == StateKey && !(address.country.alpha3 == "USA" || address.country.alpha3 == "CAN") {
+            if parameter == PropertyKeys.StateKey && !(address.country.alpha3 == "USA" || address.country.alpha3 == "CAN") {
                 continue
             }
-            
+
             catchErrorFor(parameter: parameter, withValue: address[parameter])
         }
 
         try throwErrorIfExists()
     }
-    
+
     func isValidTransactionType(transactionType: PaymentTransactionType) throws {
         path = "PaymentTransactionTypes[\(transactionType.name)]"
         resetArrays()
-        
+
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: transactionType[parameter])
         }
 
         try throwErrorIfExists()
     }
-    
+
     func isValidKlarnaItem(item: KlarnaItem) throws {
         path = "items"
         resetArrays()
-        
+
         for parameter in parameters {
             catchErrorFor(parameter: parameter, withValue: item[parameter])
         }
@@ -78,19 +78,19 @@ class RequiredParametersValidator {
 
         try throwErrorIfExists()
     }
-    
+
     private func resetArrays() {
         errorParameters = []
         paths = []
     }
-    
+
     private func catchErrorFor(parameter: String, withValue value: Any?) {
         guard let value = value as? AnyObject else {
             errorParameters.append(parameter)
             paths.append("\(path).\(parameter)")
             return
         }
-        
+
         do {
             try isValidValue(value, forParameter: parameter)
         } catch {
@@ -99,12 +99,12 @@ class RequiredParametersValidator {
                 return
             }
             errorParameters += error.parameters
-            for p in error.paths {
-                paths.append("\(path).\(p)")
+            for param in error.paths {
+                paths.append("\(path).\(param)")
             }
         }
     }
-    
+
     private func throwErrorIfExists() throws {
         if errorParameters.count == 1 {
             throw GenesisValidationError.wrongValueForParameter(errorParameters.first!, paths.first!)
@@ -116,45 +116,45 @@ class RequiredParametersValidator {
     private var isZeroAmountAllowed: Bool {
         guard let transactionTypes = paymentRequest?.transactionTypes, !transactionTypes.isEmpty else { return false }
 
-        let transactionsNames: [TransactionName] = [.authorize, .authorize3d, .sale, .sale3d]
-        return transactionTypes.first { transactionsNames.contains($0.name) } != nil
+        let transactionsNames: Set<TransactionName> = [.authorize, .authorize3d, .sale, .sale3d]
+        return !transactionsNames.isDisjoint(with: transactionTypes.map { $0.name })
     }
-    
+
     private func isURLParameter(parameter: String) -> Bool {
-        parameter == NotificationUrlKey ||
-        parameter == ReturnSuccessUrlKey ||
-        parameter == ReturnFailureUrlKey ||
-        parameter == ReturnCancelUrlKey
+        parameter == PropertyKeys.NotificationUrlKey ||
+        parameter == PropertyKeys.ReturnSuccessUrlKey ||
+        parameter == PropertyKeys.ReturnFailureUrlKey ||
+        parameter == PropertyKeys.ReturnCancelUrlKey
     }
 
     private func isIntervalWithinRange(_ interval: Int) -> Bool {
         Ranges.monthInMinutes.contains(interval)
     }
-    
+
     private func isValidUrlString(string: String) -> Bool {
-        guard !string.isEmpty, let url = URL(string: string), url.scheme != nil, !(url.scheme?.isEmpty)!, url.host != nil, !((url.host?.isEmpty)!) else {
-            return false
-        }
+        guard !string.isEmpty, let url = URL(string: string),
+              let scheme = url.scheme, !scheme.isEmpty,
+              let host = url.host, !host.isEmpty else { return false }
         return true
     }
-    
+
+    // swiftlint:disable cyclomatic_complexity
     private func isValidValue(_ value: AnyObject, forParameter parameter: String) throws {
         let regex = ParametersRegex.regexForKey(parameter)
 
-        if isURLParameter(parameter: parameter) {//URL
+        if isURLParameter(parameter: parameter) {
             guard let url = value as? String, isValidUrlString(string: url) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-        } else if parameter == ThreeDSV2ParamsKey {
-            guard let _ = value as? ThreeDSV2Params else {
+        } else if parameter == PropertyKeys.ThreeDSV2ParamsKey {
+            if !(value is ThreeDSV2Params) {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-
-        } else if parameter == AfterKey {
+        } else if parameter == PropertyKeys.AfterKey {
             guard let interval = value as? Int, isIntervalWithinRange(interval) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-        } else if let string = value as? String {//String
+        } else if let string = value as? String {
             guard !string.isEmpty else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
@@ -163,8 +163,8 @@ class RequiredParametersValidator {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
-        } else if let decimal = value as? Decimal {//Decimal
-            if parameter == AmountKey {
+        } else if let decimal = value as? Decimal {
+            if parameter == PropertyKeys.AmountKey {
                 guard decimal > 0 || decimal == 0 && isZeroAmountAllowed else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
@@ -172,11 +172,11 @@ class RequiredParametersValidator {
             guard decimal >= Decimal(0) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
-        } else if let paymentAddress = value as? PaymentAddress {//PaymentAddress
+        } else if let paymentAddress = value as? PaymentAddress {
             try paymentAddress.isValidData()
-        } else if let isoCountryInfo = value as? IsoCountryInfo {//IsoCountryInfo
+        } else if let isoCountryInfo = value as? IsoCountryInfo {
             if !regex.isEmpty {
-                guard evaluation(text: isoCountryInfo.alpha2 , regex: regex) else {
+                guard evaluation(text: isoCountryInfo.alpha2, regex: regex) else {
                     throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
                 }
             }
@@ -192,25 +192,29 @@ class RequiredParametersValidator {
             for item in klarmaItems {
                 try item.isValidData()
             }
-        } else if value is RiskParams {//RiskParams
+        } else if value is RiskParams {
             return
-        } else if value is Bool {//Bool
+        } else if value is Bool {
             return
-        } else if value is CurrencyInfo {//CurrencyInfo
+        } else if value is CurrencyInfo {
             return
-        } else if value is RecurringType {//RecurringType
+        } else if value is RecurringType {
             return
-        } else if value is RecurringCategory {//RecurringCategory
+        } else if value is RecurringCategory {
             return
-        } else if value is PaymentSubtype {//PaymentSubtype
+        } else if value is PaymentSubtype {
             return
         } else {
             assertionFailure("Unknown value type for \(parameter)")
         }
     }
-    
+    // swiftlint:enable cyclomatic_complexity
+
     private func evaluation(text: String, regex: String) -> Bool {
-        let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
+        assert(!text.isEmpty)
+        assert(!regex.isEmpty)
+
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         let evaluation = predicate.evaluate(with: text)
         return evaluation
     }
@@ -218,6 +222,6 @@ class RequiredParametersValidator {
 
 private extension RequiredParametersValidator {
     enum Ranges {
-        static let monthInMinutes = (1...44640)
+        static let monthInMinutes = (1...31 * 24 * 60)
     }
 }

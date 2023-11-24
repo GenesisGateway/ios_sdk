@@ -5,20 +5,18 @@
 
 import Foundation
 
-class WPFRequest: Request, RequestProtocol {
-    func path() -> String {
-        return Path.wpf.rawValue
+final class WPFRequest: Request {
+
+    override var path: String {
+        Path.wpf.rawValue
     }
-    
-    func httpBody() -> Data? {
-        let request = parameters!["request"] as! PaymentRequest
-        
-        return request.toXmlString().data(using:.utf8)!
+
+    override var httpBody: Data? {
+        guard let request = parameters?["request"] as? PaymentRequest else { return nil }
+        return request.toXmlString().data(using: .utf8)
     }
-    
-    func processingResponseString(string: String) -> Any? {
-        let response = WPFResponse(xmlString: string)
-        
-        return response
+
+    override func processResponseString(_ string: String) -> Any? {
+        WPFResponse(xmlString: string)
     }
 }

@@ -25,26 +25,26 @@ public struct Reminder {
 
     subscript(key: String) -> Any? {
         switch key {
-        case ChannelKey: return channel
-        case AfterKey: return after
+        case PropertyKeys.ChannelKey: return channel
+        case PropertyKeys.AfterKey: return after
         default: return nil
         }
     }
 }
 
-//MARK: GenesisDescriptionProtocol
+// MARK: GenesisDescriptionProtocol
 extension Reminder: GenesisDescriptionProtocol {
     func description() -> String {
         toXmlString()
     }
-
 }
 
 // MARK: GenesisXmlObjectProtocol
 extension Reminder: GenesisXmlObjectProtocol {
-    func propertyMap() -> [String : String] {
-        [ChannelKey: "channel",
-         AfterKey: "after"]
+
+    func propertyMap() -> [String: String] {
+        [PropertyKeys.ChannelKey: "channel",
+         PropertyKeys.AfterKey: "after"]
     }
 
     func toXmlString() -> String {

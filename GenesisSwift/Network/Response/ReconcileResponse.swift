@@ -5,6 +5,5 @@
 
 import Foundation
 
-class ReconcileResponse: Response {
-
+final class ReconcileResponse: Response {
 }

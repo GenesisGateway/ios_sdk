@@ -16,7 +16,7 @@ public final class PaymentRequest {
     public var billingAddress: PaymentAddress
     public var transactionTypes: [PaymentTransactionType]
 
-    //optional
+    // optional
     public var paymentDescription: String?
     public var shippingAddress: PaymentAddress?
     public var usage: String?
@@ -27,7 +27,6 @@ public final class PaymentRequest {
     public var gaming: Bool?
     public var consumerId: String?
     public var threeDSV2Params: ThreeDSV2Params?
-    public var recurringType: RecurringType?
     public var recurringCategory: RecurringCategory?
     public var paymentSubtype: PaymentSubtype?
     public var paymentToken: String?
@@ -43,7 +42,8 @@ public final class PaymentRequest {
     let returnFailureUrl = "https://WPFPaymentRequestFailureUrl"
     let returnCancelUrl = "https://WPFPaymentRequestCancelUrl"
 
-    /// Number of minutes determining how long the WPF will be valid. Will be set to 30 minutes by default. Valid value ranges between 1 minute and 31 days given in minutes
+    /// Number of minutes determining how long the WPF will be valid. Will be set to 30 minutes by default.
+    /// Valid value ranges between 1 minute and 31 days given in minutes
     public var lifetime: Int? {
         didSet {
             assert(oldValue == nil, "Variable lifetime can be set only once!")
@@ -107,37 +107,36 @@ public final class PaymentRequest {
 
     subscript(key: String) -> Any? {
         switch key {
-        case AmountKey: return amount
-        case TransactionIdKey: return transactionId
-        case CurrencyKey: return currency.name.rawValue
-        case UsageKey: return usage
-        case PaymentDescriptionKey: return paymentDescription
-        case CustomerEmailKey: return customerEmail
-        case CustomerPhoneKey: return customerPhone
-        case NotificationUrlKey: return notificationUrl
-        case ReturnSuccessUrlKey: return returnSuccessUrl
-        case ReturnFailureUrlKey: return returnFailureUrl
-        case ReturnCancelUrlKey: return returnCancelUrl
-        case BillingAddressKey: return billingAddress
-        case ShippingAddressKey: return shippingAddress
-        case TransactionTypesKey: return transactionTypes
-        case RiskParamsKey: return riskParams
-        case ThreeDSV2ParamsKey: return threeDSV2Params
-        case DynamicDescriptorParamsKey: return dynamicDescriptorParams
-        case LifetimeKey: return lifetime
-        case PayLaterKey: return payLater
-        case RemindersKey: return reminders
-        case Crypto: return crypto
-        case Gaming: return gaming
-        case ConsumerId: return consumerId
-        case RecurringTypeKey: return recurringType
-        case RecurringCategoryKey: return recurringCategory
-        case PaymentSubtypeKey: return paymentSubtype
-        case PaymentTokenKey: return paymentToken
-        case BirthDateKey: return birthDate
-        case RemoteIpKey: return remoteIp
-        case DocumentIdKey: return documentId
-        case BusinessAttributesKey: return businessAttributes
+        case PropertyKeys.AmountKey: return amount
+        case PropertyKeys.TransactionIdKey: return transactionId
+        case PropertyKeys.CurrencyKey: return currency.name.rawValue
+        case PropertyKeys.UsageKey: return usage
+        case PropertyKeys.PaymentDescriptionKey: return paymentDescription
+        case PropertyKeys.CustomerEmailKey: return customerEmail
+        case PropertyKeys.CustomerPhoneKey: return customerPhone
+        case PropertyKeys.NotificationUrlKey: return notificationUrl
+        case PropertyKeys.ReturnSuccessUrlKey: return returnSuccessUrl
+        case PropertyKeys.ReturnFailureUrlKey: return returnFailureUrl
+        case PropertyKeys.ReturnCancelUrlKey: return returnCancelUrl
+        case PropertyKeys.BillingAddressKey: return billingAddress
+        case PropertyKeys.ShippingAddressKey: return shippingAddress
+        case PropertyKeys.TransactionTypesKey: return transactionTypes
+        case PropertyKeys.RiskParamsKey: return riskParams
+        case PropertyKeys.ThreeDSV2ParamsKey: return threeDSV2Params
+        case PropertyKeys.DynamicDescriptorParamsKey: return dynamicDescriptorParams
+        case PropertyKeys.LifetimeKey: return lifetime
+        case PropertyKeys.PayLaterKey: return payLater
+        case PropertyKeys.RemindersKey: return reminders
+        case PropertyKeys.Crypto: return crypto
+        case PropertyKeys.Gaming: return gaming
+        case PropertyKeys.ConsumerId: return consumerId
+        case PropertyKeys.RecurringCategoryKey: return recurringCategory
+        case PropertyKeys.PaymentSubtypeKey: return paymentSubtype
+        case PropertyKeys.PaymentTokenKey: return paymentToken
+        case PropertyKeys.BirthDateKey: return birthDate
+        case PropertyKeys.RemoteIpKey: return remoteIp
+        case PropertyKeys.DocumentIdKey: return documentId
+        case PropertyKeys.BusinessAttributesKey: return businessAttributes
         default: return nil
         }
     }
@@ -148,37 +147,36 @@ public final class PaymentRequest {
 extension PaymentRequest: GenesisXmlObjectProtocol {
 
     func propertyMap() -> [String: String] {
-        [TransactionIdKey: "transaction_id",
-        AmountKey: "amount",
-        CurrencyKey: "currency",
-        UsageKey: "usage",
-        PaymentDescriptionKey: "description",
-        CustomerEmailKey: "customer_email",
-        CustomerPhoneKey: "customer_phone",
-        NotificationUrlKey: "notification_url",
-        ReturnSuccessUrlKey: "return_success_url",
-        ReturnFailureUrlKey: "return_failure_url",
-        ReturnCancelUrlKey: "return_cancel_url",
-        BillingAddressKey: "billing_address",
-        ShippingAddressKey: "shipping_address",
-        TransactionTypesKey: "transaction_types",
-        LifetimeKey: "lifetime",
-        PayLaterKey: "pay_later",
-        RemindersKey: "reminders",
-        Crypto: "crypto",
-        Gaming: "gaming",
-        ConsumerId: "consumer_id",
-        RiskParamsKey: "risk_params",
-        ThreeDSV2ParamsKey: "threeds_v2_params",
-        DynamicDescriptorParamsKey: "dynamic_descriptor_params",
-        RecurringTypeKey: "recurring_type",
-        RecurringCategoryKey: "recurring_category",
-        BusinessAttributesKey: "business_attributes",
-        PaymentSubtypeKey: "payment_subtype",
-        PaymentTokenKey: "payment_token",
-        BirthDateKey: "birth_date",
-        RemoteIpKey: "remote_ip",
-        DocumentIdKey: "document_id"]
+        [PropertyKeys.TransactionIdKey: "transaction_id",
+         PropertyKeys.AmountKey: "amount",
+         PropertyKeys.CurrencyKey: "currency",
+         PropertyKeys.UsageKey: "usage",
+         PropertyKeys.PaymentDescriptionKey: "description",
+         PropertyKeys.CustomerEmailKey: "customer_email",
+         PropertyKeys.CustomerPhoneKey: "customer_phone",
+         PropertyKeys.NotificationUrlKey: "notification_url",
+         PropertyKeys.ReturnSuccessUrlKey: "return_success_url",
+         PropertyKeys.ReturnFailureUrlKey: "return_failure_url",
+         PropertyKeys.ReturnCancelUrlKey: "return_cancel_url",
+         PropertyKeys.BillingAddressKey: "billing_address",
+         PropertyKeys.ShippingAddressKey: "shipping_address",
+         PropertyKeys.TransactionTypesKey: "transaction_types",
+         PropertyKeys.LifetimeKey: "lifetime",
+         PropertyKeys.PayLaterKey: "pay_later",
+         PropertyKeys.RemindersKey: "reminders",
+         PropertyKeys.Crypto: "crypto",
+         PropertyKeys.Gaming: "gaming",
+         PropertyKeys.ConsumerId: "consumer_id",
+         PropertyKeys.RiskParamsKey: "risk_params",
+         PropertyKeys.ThreeDSV2ParamsKey: "threeds_v2_params",
+         PropertyKeys.DynamicDescriptorParamsKey: "dynamic_descriptor_params",
+         PropertyKeys.RecurringCategoryKey: "recurring_category",
+         PropertyKeys.BusinessAttributesKey: "business_attributes",
+         PropertyKeys.PaymentSubtypeKey: "payment_subtype",
+         PropertyKeys.PaymentTokenKey: "payment_token",
+         PropertyKeys.BirthDateKey: "birth_date",
+         PropertyKeys.RemoteIpKey: "remote_ip",
+         PropertyKeys.DocumentIdKey: "document_id"]
     }
 
     func toXmlString() -> String {
@@ -187,7 +185,7 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
             guard let varValue = self[key] else { continue }
 
             let describing: String
-            if key == AmountKey {
+            if key == PropertyKeys.AmountKey {
                 guard let minorAmount = Currencies.convertToMinor(fromAmount: amount, andCurrency: currency.name) else { return "" }
                 describing = minorAmount
             } else if let varValue = varValue as? Bool {
@@ -218,7 +216,7 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
         guard let regexOpenNode = try? NSRegularExpression(pattern: "<(?!/).*?>", options: .caseInsensitive) else { return nil }
         guard let regexCloseNode = try? NSRegularExpression(pattern: "</.*?>", options: .caseInsensitive) else { return nil }
 
-        let range = NSMakeRange(0, xml.count)
+        let range = NSRange(location: 0, length: xml.count)
         let modString = regexNodes.stringByReplacingMatches(in: xml, options: [], range: range, withTemplate: "\n$0\n")
         let allNodes = modString.split { $0 == "\n" }.map(String.init)
 
@@ -236,14 +234,14 @@ extension PaymentRequest: GenesisXmlObjectProtocol {
                 continue
             }
 
-            var matches = regexOpenNode.numberOfMatches(in: element, options: [], range: NSMakeRange(0, element.count))
+            var matches = regexOpenNode.numberOfMatches(in: element, options: [], range: NSRange(location: 0, length: element.count))
             if matches == 1 {
                 indentationCount += 1
                 output += "\n" + String(repeating: indent, count: indentationCount) + element
                 continue
             }
 
-            matches = regexCloseNode.numberOfMatches(in: element, options: [], range: NSMakeRange(0, element.count))
+            matches = regexCloseNode.numberOfMatches(in: element, options: [], range: NSRange(location: 0, length: element.count))
             if matches == 1 {
                 indentationCount -= 1
                 output += element
@@ -298,10 +296,8 @@ private extension Array {
 private extension PaymentRequest {
 
     func isParameterRequired(for requiredTypes: Set<TransactionName>) -> Bool {
-        for type in transactionTypes {
-            if requiredTypes.contains(type.name) {
-                return true
-            }
+        for type in transactionTypes where requiredTypes.contains(type.name) {
+            return true
         }
         return false
     }

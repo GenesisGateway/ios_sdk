@@ -77,6 +77,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5690B0FD2A4AD6060006F03E /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		569700A82A150CBE00A98CE4 /* iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		569700BF2A15107700A98CE4 /* GenesisSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GenesisSwift.xcodeproj; path = ../GenesisSwift.xcodeproj; sourceTree = "<group>"; };
 		569700F72A15261300A98CE4 /* XMLRespose.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XMLRespose.xml; sourceTree = "<group>"; };
@@ -128,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				569700AA2A150CBE00A98CE4 /* iOS Example */,
+				5690B0FD2A4AD6060006F03E /* .swiftlint.yml */,
 				569700BF2A15107700A98CE4 /* GenesisSwift.xcodeproj */,
 				569700A92A150CBE00A98CE4 /* Products */,
 				569701402A16741900A98CE4 /* Frameworks */,
@@ -256,6 +258,7 @@
 				569700A52A150CBE00A98CE4 /* Frameworks */,
 				569700A62A150CBE00A98CE4 /* Resources */,
 				569700C82A15133500A98CE4 /* Embed Frameworks */,
+				5690B0FB2A4ACF970006F03E /* Run SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -365,6 +368,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5690B0FB2A4ACF970006F03E /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		569700A42A150CBE00A98CE4 /* Sources */ = {
@@ -570,7 +595,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emerchantpay.inapppayments;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -602,7 +627,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emerchantpay.inapppayments;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

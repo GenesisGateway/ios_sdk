@@ -37,9 +37,9 @@ extension ManagedRecurringParams: GenesisDescriptionProtocol {
 
 // MARK: - Automatic
 
-extension ManagedRecurringParams {
+public extension ManagedRecurringParams {
 
-    public struct Automatic {
+    struct Automatic {
 
         public enum IntervalValues: String, CaseIterable {
             case days
@@ -86,12 +86,11 @@ extension ManagedRecurringParams.Automatic: GenesisDescriptionProtocol, XMLConve
     }
 }
 
-
 // MARK: - Manual
 
-extension ManagedRecurringParams {
+public extension ManagedRecurringParams {
 
-    public struct Manual {
+    struct Manual {
 
         public enum PaymentTypeValues: String, CaseIterable {
             case initial

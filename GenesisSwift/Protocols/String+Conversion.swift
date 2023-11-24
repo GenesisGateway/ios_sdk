@@ -5,8 +5,9 @@
 
 import Foundation
 
-extension String {
-    public func explicitConvertionToDecimal() -> Decimal? {
+public extension String {
+
+    func explicitConvertionToDecimal() -> Decimal? {
         struct StaticFormatter {
             static let formatter: NumberFormatter = {
                 let tmpFormatter = NumberFormatter()
@@ -15,11 +16,11 @@ extension String {
                 return tmpFormatter
             }()
         }
-        
-        if let decimalNumber = StaticFormatter.formatter.number(from: self) as? Decimal  {
+
+        if let decimalNumber = StaticFormatter.formatter.number(from: self) as? Decimal {
             return decimalNumber
         }
-        
+
         return nil
     }
 }

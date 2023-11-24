@@ -12,17 +12,17 @@ public enum GenesisErrorCode: String {
     case eDataParsing
 }
 
-public struct GenesisError {
+public struct GenesisError: Error {
     public let code: String?
     public let technicalMessage: String?
     public let message: String?
-    
+
     init(code: String?, technicalMessage: String?, message: String?) {
         self.code = code
         self.technicalMessage = technicalMessage
         self.message = message
     }
-    
+
     init(message: String) {
         self.code = ""
         self.technicalMessage = ""

@@ -5,7 +5,7 @@
 
 import UIKit
 
-public protocol GenesisDelegate {
+public protocol GenesisDelegate: AnyObject {
     func genesisDidFinishLoading()
     func genesisDidEndWithSuccess()
     func genesisDidEndWithCancel()
@@ -14,35 +14,34 @@ public protocol GenesisDelegate {
 }
 
 public class Genesis: NSObject {
-    ///Your Configuration setup
+    /// Your Configuration setup
     public private(set) var configuration: Configuration
 
-    ///Your PaymentRequest setup
+    /// Your PaymentRequest setup
     public private(set) var paymentRequest: PaymentRequest
 
-    ///Protocol for common actions
+    /// Protocol for common actions
     public private(set) var delegate: GenesisDelegate
 
-    ///If you show with animated = true then back animated will be the same
+    /// If you show with animated = true then back animated will be the same
     public var animatedBack = false
 
     private(set) var genesisWebView: GenesisWebView?
     private(set) lazy var genesisVC = GenesisViewController()
 
-    ///Init with Configuration, PaymentRequest and GenesisDelegate
-    //GenesisDelegate is optional
+    // Init with Configuration, PaymentRequest and GenesisDelegate
     public init(withConfiguration configuration: Configuration, paymentRequest: PaymentRequest, forDelegate delegate: GenesisDelegate) {
         self.configuration = configuration
         self.paymentRequest = paymentRequest
         self.delegate = delegate
     }
 
-    ///Present modal view to ViewController
+    /// Present modal view to ViewController
     public func present(toViewController viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         showView(toViewController: viewController, animated: animated, forPush: false, completion: completion)
     }
 
-    ///Push view to NavigationController
+    /// Push view to NavigationController
     public func push(toNavigationController navigationController: UINavigationController, animated: Bool) {
         showView(toViewController: navigationController, animated: animated, forPush: true, completion: nil)
     }
@@ -60,7 +59,7 @@ public class Genesis: NSObject {
         }
     }
 
-    ///Get GenesisViewController and show with custom logic
+    /// Get GenesisViewController and show with custom logic
     public func genesisViewController() -> GenesisViewController? {
         setupGenesisWebView()
         guard genesisWebView != nil else { return nil }
@@ -69,11 +68,12 @@ public class Genesis: NSObject {
     }
 
     func setupGenesisWebView() {
-        guard let gwv = genesisWebViewWithConfiguration() else { return }
-        genesisWebView = gwv
+        if let gwv = genesisWebViewWithConfiguration() {
+            genesisWebView = gwv
+        }
     }
 
-    ///Back action for navigation and modally view
+    /// Back action for navigation and modally view
     public func back(animated: Bool) {
         if let navigationController = genesisVC.navigationController {
             navigationController.popViewController(animated: animated)
@@ -86,7 +86,9 @@ public class Genesis: NSObject {
         do {
             try paymentRequest.isValidData()
         } catch {
-            delegate.genesisValidationError(error: error as! GenesisValidationError)
+            if let error = error as? GenesisValidationError {
+                delegate.genesisValidationError(error: error)
+            }
             return nil
         }
 

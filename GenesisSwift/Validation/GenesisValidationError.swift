@@ -13,7 +13,7 @@ public enum GenesisValidationError: Error {
 extension GenesisValidationError: LocalizedError {
     public var errorDescription: String? {
         var string = ""
-        
+
         switch self {
         case .wrongValueForParameters(let parameters, _):
             for parameter in parameters {
@@ -31,20 +31,20 @@ extension GenesisValidationError: LocalizedError {
 }
 
 extension GenesisValidationError: CustomNSError {
-    public var errorDomain : String { return "GenesisSwift" }
+    public static var errorDomain: String { return "GenesisSwift" }
     public var errorUserInfo: [String: Any] { return ["parameters": parameters, "paths": paths] }
-    
+
     public var parameters: [String] {
         switch self {
         case .wrongValueForParameters(let params, _): return params
         case .wrongValueForParameter(let param, _): return [param]
         }
     }
-    
+
     public var paths: [String] {
         switch self {
-        case .wrongValueForParameters(_, let p): return p
-        case .wrongValueForParameter(_,  let p): return [p]
+        case .wrongValueForParameters(_, let paths): return paths
+        case .wrongValueForParameter(_, let path): return [path]
         }
     }
 

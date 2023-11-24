@@ -7,20 +7,20 @@ import UIKit
 
 public final class GenesisViewController: UIViewController {
 
-    lazy var indicator: UIActivityIndicatorView = {
-        let indi = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-        indi.color = UIColor.black
+    private(set) lazy var indicator: UIActivityIndicatorView = {
+        let indi = UIActivityIndicatorView(style: .whiteLarge)
+        indi.color = .black
         indi.hidesWhenStopped = true
-        
-        self.view.addSubview(indi)
+
+        view.addSubview(indi)
         indi.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            indi.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            indi.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)])
-        
+            indi.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            indi.centerYAnchor.constraint(equalTo: view.centerYAnchor)])
+
         return indi
     }()
-    
+
     public func back(animated: Bool) {
         if let navigationController = navigationController {
             navigationController.popViewController(animated: animated)
@@ -28,27 +28,23 @@ public final class GenesisViewController: UIViewController {
             dismiss(animated: animated, completion: nil)
         }
     }
-    
+
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
-        indicator.startAnimating()
-        
-        self.setupView()
-    }
-    
-    func setupView() {
-        view.backgroundColor = UIColor.white
 
-        if let navigationController = self.navigationController {
-            navigationController.navigationBar.isTranslucent = false
-        }
+        setupView()
+        indicator.startAnimating()
+    }
+
+    func setupView() {
+        view.backgroundColor = .white
+        navigationController?.navigationBar.isTranslucent = false
     }
 
     func addView(_ newView: UIView) {
         view.addSubview(newView)
         newView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             newView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             newView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),

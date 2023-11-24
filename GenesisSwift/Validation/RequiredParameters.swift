@@ -5,76 +5,76 @@
 
 import Foundation
 
-let TransactionIdKey = "transactionId"
-let AmountKey = "amount"
-let CurrencyKey = "currency"
-let TransactionTypesKey = "transactionTypes"
-let ReturnSuccessUrlKey = "returnSuccessUrl"
-let ReturnFailureUrlKey = "returnFailureUrl"
-let ReturnCancelUrlKey = "returnCancelUrl"
-let CustomerEmailKey = "customerEmail"
-let CustomerPhoneKey = "customerPhone"
-let BillingAddressKey = "billingAddress"
-let NotificationUrlKey = "notificationUrl"
-let UsageKey = "usage"
-let PaymentDescriptionKey = "paymentDescription"
-let ShippingAddressKey = "shippingAddress"
-let RiskParamsKey = "riskParams"
-let ThreeDSV2ParamsKey = "threeDSV2Params"
-let DynamicDescriptorParamsKey = "dynamicDescriptorParams"
-let LifetimeKey = "lifetime"
-let PayLaterKey = "payLater"
-let Crypto = "crypto"
-let ConsumerId = "consumerId"
-let Gaming = "gaming"
-let FirstNameKey = "firstName"
-let LastNameKey = "lastName"
-let Address1Key = "address1"
-let Address2Key = "address2"
-let ZipCodeKey = "zipCode"
-let CityKey = "city"
-let CountryKey = "country"
-let StateKey = "state"
-let CustomerAccountIdKey = "customerAccountId"
-let SourceWalletIdKey = "sourceWalletId"
-let MerchantCustomerIdKey = "merchantCustomerId"
-let ProductNameKey = "productName"
-let ProductCategoryKey = "productCategory"
-let CardTypeKey = "cardType"
-let RedeemTypeKey = "redeemType"
-
-let OrderTaxAmountKey = "orderTaxAmount"
-let CustomerGenderKey = "customerGender"
-let ItemsKey = "items"
-let ItemTypeKey = "itemType"
-let QuantityKey = "quantity"
-let UnitPriceKey = "unitPrice"
-let TotalAmountKey = "totalAmount"
-let ManagedRecurringKey = "managedRecurring"
-let RecurringTypeKey = "recurringType"
-let RecurringCategoryKey = "recurringCategory"
-
-let PaymentTokenKey = "paymentToken"
-let PaymentSubtypeKey = "paymentSubtype"
-let BirthDateKey = "birthDate"
-let RemoteIpKey = "remoteIp"
-let DocumentIdKey = "documentId"
-let BusinessAttributesKey = "businessAttributes"
-let EventStartDateKey = "eventStartDate"
-let EventEndDateKey = "eventEndDate"
-let EventOrganizerIdKey = "eventOrganizerId"
-let EventIdKey = "eventId"
-let DateOfOrderKey = "dateOfOrder"
-let DeliveryDateKey = "deliveryDate"
-let NameOfTheSupplierKey = "nameOfTheSupplier"
-let MerchantNameKey = "merchantName"
-let MerchantCityKey = "merchantCity"
-let SubMerchantIdKey = "subMerchantId"
-let RemindersKey = "reminders"
-let ChannelKey = "channel"
-let AfterKey = "after"
-
 enum PropertyKeys {
+
+    static let TransactionIdKey = "transactionId"
+    static let AmountKey = "amount"
+    static let CurrencyKey = "currency"
+    static let TransactionTypesKey = "transactionTypes"
+    static let ReturnSuccessUrlKey = "returnSuccessUrl"
+    static let ReturnFailureUrlKey = "returnFailureUrl"
+    static let ReturnCancelUrlKey = "returnCancelUrl"
+    static let CustomerEmailKey = "customerEmail"
+    static let CustomerPhoneKey = "customerPhone"
+    static let BillingAddressKey = "billingAddress"
+    static let NotificationUrlKey = "notificationUrl"
+    static let UsageKey = "usage"
+    static let PaymentDescriptionKey = "paymentDescription"
+    static let ShippingAddressKey = "shippingAddress"
+    static let RiskParamsKey = "riskParams"
+    static let ThreeDSV2ParamsKey = "threeDSV2Params"
+    static let DynamicDescriptorParamsKey = "dynamicDescriptorParams"
+    static let LifetimeKey = "lifetime"
+    static let PayLaterKey = "payLater"
+    static let Crypto = "crypto"
+    static let ConsumerId = "consumerId"
+    static let Gaming = "gaming"
+    static let FirstNameKey = "firstName"
+    static let LastNameKey = "lastName"
+    static let Address1Key = "address1"
+    static let Address2Key = "address2"
+    static let ZipCodeKey = "zipCode"
+    static let CityKey = "city"
+    static let CountryKey = "country"
+    static let StateKey = "state"
+    static let CustomerAccountIdKey = "customerAccountId"
+    static let SourceWalletIdKey = "sourceWalletId"
+    static let MerchantCustomerIdKey = "merchantCustomerId"
+    static let ProductNameKey = "productName"
+    static let ProductCategoryKey = "productCategory"
+    static let CardTypeKey = "cardType"
+    static let RedeemTypeKey = "redeemType"
+
+    static let OrderTaxAmountKey = "orderTaxAmount"
+    static let CustomerGenderKey = "customerGender"
+    static let ItemsKey = "items"
+    static let ItemTypeKey = "itemType"
+    static let QuantityKey = "quantity"
+    static let UnitPriceKey = "unitPrice"
+    static let TotalAmountKey = "totalAmount"
+    static let ManagedRecurringKey = "managedRecurring"
+    static let RecurringTypeKey = "recurringType"
+    static let RecurringCategoryKey = "recurringCategory"
+
+    static let PaymentTokenKey = "paymentToken"
+    static let PaymentSubtypeKey = "paymentSubtype"
+    static let BirthDateKey = "birthDate"
+    static let RemoteIpKey = "remoteIp"
+    static let DocumentIdKey = "documentId"
+    static let BusinessAttributesKey = "businessAttributes"
+    static let EventStartDateKey = "eventStartDate"
+    static let EventEndDateKey = "eventEndDate"
+    static let EventOrganizerIdKey = "eventOrganizerId"
+    static let EventIdKey = "eventId"
+    static let DateOfOrderKey = "dateOfOrder"
+    static let DeliveryDateKey = "deliveryDate"
+    static let NameOfTheSupplierKey = "nameOfTheSupplier"
+    static let MerchantNameKey = "merchantName"
+    static let MerchantCityKey = "merchantCity"
+    static let SubMerchantIdKey = "subMerchantId"
+    static let RemindersKey = "reminders"
+    static let ChannelKey = "channel"
+    static let AfterKey = "after"
 
     // 3DSv2 parameters' keys
     static let Control = "control"
@@ -85,7 +85,7 @@ enum PropertyKeys {
 }
 
 enum RequiredParameters {
-    
+
     static func requiredParametersForRequest(paymentRequest: PaymentRequest) -> [String] {
         var set = Set<String>()
 
@@ -95,68 +95,68 @@ enum RequiredParameters {
 
         // these parameters are not required to be present in the request, but they must be validated if they are
         if paymentRequest.consumerId?.isEmpty == false {
-            set.insert(ConsumerId)
+            set.insert(PropertyKeys.ConsumerId)
         }
         if paymentRequest.customerPhone?.isEmpty == false {
-            set.insert(CustomerPhoneKey)
+            set.insert(PropertyKeys.CustomerPhoneKey)
         }
         if paymentRequest.payLater == true {
-            set.insert(RemindersKey)
+            set.insert(PropertyKeys.RemindersKey)
         }
-        
+
         return Array(set)
     }
-    
+
     static func requiredParametersForTransactionType(transactionType: PaymentTransactionType) -> [String] {
         switch transactionType.name {
         case .ppro:
-            return [ProductNameKey,
-                    ProductCategoryKey,
-                    CardTypeKey,
-                    RedeemTypeKey]
+            return [PropertyKeys.ProductNameKey,
+                    PropertyKeys.ProductCategoryKey,
+                    PropertyKeys.CardTypeKey,
+                    PropertyKeys.RedeemTypeKey]
         case .citadelPayin:
-            return [MerchantCustomerIdKey]
+            return [PropertyKeys.MerchantCustomerIdKey]
         case .idebitPayin, .instaDebitPayin:
-            return [CustomerAccountIdKey]
+            return [PropertyKeys.CustomerAccountIdKey]
         case .klarnaAuthorize:
-            return [OrderTaxAmountKey,
-                    CustomerGenderKey,
-                    ItemsKey]
+            return [PropertyKeys.OrderTaxAmountKey,
+                    PropertyKeys.CustomerGenderKey,
+                    PropertyKeys.ItemsKey]
+        case .authorize, .authorize3d, .sale, .sale3d:
+            return [PropertyKeys.RecurringTypeKey]
         default:
             return []
         }
     }
-    
+
     static func requiredParametersForKlarnaItem() -> [String] {
-        [ItemTypeKey, QuantityKey, UnitPriceKey, TotalAmountKey]
+        [PropertyKeys.ItemTypeKey, PropertyKeys.QuantityKey, PropertyKeys.UnitPriceKey, PropertyKeys.TotalAmountKey]
     }
-    
+
     static func requiredParametersForAddress() -> [String] {
-        [FirstNameKey, LastNameKey, CountryKey, StateKey]
+        [PropertyKeys.FirstNameKey, PropertyKeys.LastNameKey, PropertyKeys.CountryKey, PropertyKeys.StateKey]
     }
 
     static func requiredParametersForReminder() -> [String] {
-        [AfterKey]
+        [PropertyKeys.AfterKey]
     }
-    
-    static private func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {
-        var requiredParameters = [TransactionIdKey, AmountKey, CurrencyKey, TransactionTypesKey, ReturnSuccessUrlKey,
-                                  ReturnFailureUrlKey, ReturnCancelUrlKey, CustomerEmailKey, BillingAddressKey, NotificationUrlKey]
+
+    private static func requiredParametersForRequestWithTransactionName(transactionName: TransactionName) -> [String] {
+        var requiredParameters = [PropertyKeys.TransactionIdKey, PropertyKeys.AmountKey, PropertyKeys.CurrencyKey,
+                                  PropertyKeys.TransactionTypesKey, PropertyKeys.ReturnSuccessUrlKey,
+                                  PropertyKeys.ReturnFailureUrlKey, PropertyKeys.ReturnCancelUrlKey, PropertyKeys.CustomerEmailKey,
+                                  PropertyKeys.BillingAddressKey, PropertyKeys.NotificationUrlKey]
 
         if [.authorize3d, .sale3d, .initRecurringSale3d].contains(transactionName) {
-            requiredParameters.append(ThreeDSV2ParamsKey)
-        }
-
-        if [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) {
-            requiredParameters.append(RecurringTypeKey)
+            requiredParameters.append(PropertyKeys.ThreeDSV2ParamsKey)
         }
 
         if [.initRecurringSale, .initRecurringSale3d].contains(transactionName) {
-            requiredParameters.append(RecurringCategoryKey)
+            requiredParameters.append(PropertyKeys.RecurringCategoryKey)
         }
 
         if [.applePay].contains(transactionName) {
-            requiredParameters.append(contentsOf: [PaymentSubtypeKey])
+            requiredParameters.append(contentsOf: [PropertyKeys.PaymentSubtypeKey])
         }
 
         return requiredParameters

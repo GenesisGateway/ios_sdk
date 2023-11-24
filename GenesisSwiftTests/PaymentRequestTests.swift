@@ -43,12 +43,14 @@ extension PaymentRequestTests {
     func testValidation() {
         var items = ["amount", "notificationUrl", "consumerId", "transactionId", "customerEmail", "firstName", "lastName", "country"]
 
-        let paymentAddress = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "", state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
-
-        sut = PaymentRequest(transactionId: "", amount: 0, currency: Currencies().EUR, customerEmail: "", customerPhone: "", billingAddress: paymentAddress, transactionTypes: [PaymentTransactionType(name: .sale)], notificationUrl: "")
+        let paymentAddress = PaymentAddress(firstName: "", lastName: "", address1: "", address2: "", zipCode: "", city: "",
+                                            state: "", country: IsoCountryCodes.search(byName: "fixed.country"))
+        sut = PaymentRequest(transactionId: "", amount: 0, currency: Currencies().EUR, customerEmail: "",
+                             customerPhone: "", billingAddress: paymentAddress,
+                             transactionTypes: [PaymentTransactionType(name: .sale)], notificationUrl: "")
         sut.consumerId = "asdasdsadasasdasda"
 
-        sut.recurringType = RecurringType(type: .subsequent)
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .subsequent)
 
         sut.amount = -1
         validationWithExpectedErrorForParameters(items)
@@ -144,20 +146,27 @@ extension PaymentRequestTests {
         sut.notificationUrl = "https://google.com"
         sut.billingAddress.state = "NY"
         sut.threeDSV2Params = nil
-        sut.recurringType = RecurringType(type: .subsequent)
 
         sut.transactionTypes = [PaymentTransactionType(name: .authorize)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         XCTAssertNoThrow(try sut.isValidData())
+
         sut.transactionTypes = [PaymentTransactionType(name: .authorize3d)]
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(ThreeDSV2ParamsKey, "").localizedDescription)
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
+        validationWithExpectedError(errorDescription:
+            GenesisValidationError.wrongValueForParameter(PropertyKeys.ThreeDSV2ParamsKey, "").localizedDescription)
         sut.threeDSV2Params = ThreeDSV2Params()
         XCTAssertNoThrow(try sut.isValidData())
         sut.threeDSV2Params = nil
 
         sut.transactionTypes = [PaymentTransactionType(name: .sale)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         XCTAssertNoThrow(try sut.isValidData())
+
         sut.transactionTypes = [PaymentTransactionType(name: .sale3d)]
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(ThreeDSV2ParamsKey, "").localizedDescription)
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
+        validationWithExpectedError(errorDescription:
+            GenesisValidationError.wrongValueForParameter(PropertyKeys.ThreeDSV2ParamsKey, "").localizedDescription)
         sut.threeDSV2Params = ThreeDSV2Params()
         XCTAssertNoThrow(try sut.isValidData())
         sut.threeDSV2Params = nil
@@ -166,7 +175,8 @@ extension PaymentRequestTests {
         sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale)]
         XCTAssertNoThrow(try sut.isValidData())
         sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale3d)]
-        validationWithExpectedError(errorDescription: GenesisValidationError.wrongValueForParameter(ThreeDSV2ParamsKey, "").localizedDescription)
+        validationWithExpectedError(errorDescription:
+            GenesisValidationError.wrongValueForParameter(PropertyKeys.ThreeDSV2ParamsKey, "").localizedDescription)
         sut.threeDSV2Params = ThreeDSV2Params()
         XCTAssertNoThrow(try sut.isValidData())
         sut.threeDSV2Params = nil
@@ -379,7 +389,9 @@ extension PaymentRequestTests {
 
         sut.paymentSubtype = PaymentSubtype(type: .authorize)
         sut.paymentToken = "Encrypted Payment Token"
-        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: Date.distantFuture, eventOrganizerId: "123456", eventId: "1234", dateOfOrder: Date.distantPast, deliveryDate: Date(), nameOfTheSupplier: "EMP")
+        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: .distantFuture,
+                                                    eventOrganizerId: "123456", eventId: "1234", dateOfOrder: .distantPast,
+                                                    deliveryDate: Date(), nameOfTheSupplier: "EMP")
         sut.birthDate = Date(timeIntervalSince1970: 12345678)
         sut.documentId = "12412525"
         sut.remoteIp = "212.168.2.1"
@@ -409,7 +421,9 @@ extension PaymentRequestTests {
 
         sut.paymentSubtype = PaymentSubtype(type: .authorize)
         sut.paymentToken = "Encrypted Payment Token"
-        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: Date.distantFuture, eventOrganizerId: "123456", eventId: "1234", dateOfOrder: Date.distantPast, deliveryDate: Date(), nameOfTheSupplier: "EMP")
+        sut.businessAttributes = BusinessAttributes(eventStartDate: Date(), eventEndDate: .distantFuture,
+                                                    eventOrganizerId: "123456", eventId: "1234", dateOfOrder: .distantPast,
+                                                    deliveryDate: Date(), nameOfTheSupplier: "EMP")
         sut.birthDate = Date(timeIntervalSince1970: 12345678)
         sut.documentId = "12412525"
         sut.remoteIp = "212.168.2.1"
@@ -427,20 +441,23 @@ extension PaymentRequestTests {
 
         // transaction types which allows 0 amounts
         sut.transactionTypes = [PaymentTransactionType(name: .sale)]
-        sut.recurringType = RecurringType(type: .initial)
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         XCTAssertNoThrow(try sut.isValidData())
         XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
 
         sut.transactionTypes = [PaymentTransactionType(name: .sale3d)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         sut.threeDSV2Params = ThreeDSV2Params()
         XCTAssertNoThrow(try sut.isValidData())
         XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
 
         sut.transactionTypes = [PaymentTransactionType(name: .authorize)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         XCTAssertNoThrow(try sut.isValidData())
         XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
 
         sut.transactionTypes = [PaymentTransactionType(name: .authorize3d)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .initial)
         XCTAssertNoThrow(try sut.isValidData())
         XCTAssertEqual("0", xmlValue(inTag: "amount", from: sut.toXmlString()))
     }
@@ -458,7 +475,10 @@ extension PaymentRequestTests {
                              transactionTypes: transactionTypes,
                              notificationUrl: "https://google.com")
 
-        sut.recurringType = RecurringType(type: .managed)
+        for type in transactionTypes {
+            type.recurringType = RecurringType(type: .managed)
+        }
+
         sut.payLater = true
         sut.reminders = [Reminder(channel: .email, after: 12)]
 
@@ -477,7 +497,6 @@ extension PaymentRequestTests {
         XCTAssertNil(xmlValue(inTag: "reminders", from: sut.toXmlString()))
         XCTAssertNil(xmlValue(inTag: "channel", from: sut.toXmlString()))
         XCTAssertNil(xmlValue(inTag: "after", from: sut.toXmlString()))
-
     }
 
     func testRecurringType() {
@@ -493,7 +512,7 @@ extension PaymentRequestTests {
                              transactionTypes: transactionTypes,
                              notificationUrl: "fixed.url")
 
-        sut.recurringType = RecurringType(type: .managed)
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .managed)
 
         let xml = sut.toXmlString()
         XCTAssertEqual("managed", xmlValue(inTag: "recurring_type", from: xml))
@@ -588,7 +607,7 @@ private extension PaymentRequestTests {
         let end = "required parameter"
 
         guard let params = valueBetween(start: start, end: end, in: errorMessage), !params.isEmpty else { return [] }
-        return params.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines)}
+        return params.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
     }
 
     func valueBetween(start: String, end: String, in text: String) -> String? {

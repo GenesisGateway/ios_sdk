@@ -6,7 +6,7 @@
 import Foundation
 
 public final class RiskParams {
-    
+
     public var userId: String?
     public var sessionId: String?
     public var ssn: String?
@@ -27,11 +27,10 @@ public final class RiskParams {
     public var password: String?
     public var binName: String?
     public var binPhone: String?
-    
+
     public init() {
-        
     }
-    
+
 /// Default initialization
 ///
 /// - Parameters:
@@ -55,28 +54,27 @@ public final class RiskParams {
 ///     - password: MaxMind specific risk param
 ///     - binName: MaxMind specific risk param
 ///     - binPhone: MaxMind specific risk param
-    
+
     public init(userId: String?,
-         sessionId: String?,
-         ssn: String?,
-         macAddress: String?,
-         userLevel: String?,
-         email: String?,
-         phone: String?,
-         remoteIp: String?,
-         serialNumber: String?,
-         panTail: String?,
-         bin: String?,
-         firstName: String?,
-         lastName: String?,
-         country: IsoCountryInfo?,
-         pan: String?,
-         forwardedIp: String?,
-         username: String?,
-         password: String?,
-         binName: String?,
-         binPhone: String?) {
-        
+                sessionId: String?,
+                ssn: String?,
+                macAddress: String?,
+                userLevel: String?,
+                email: String?,
+                phone: String?,
+                remoteIp: String?,
+                serialNumber: String?,
+                panTail: String?,
+                bin: String?,
+                firstName: String?,
+                lastName: String?,
+                country: IsoCountryInfo?,
+                pan: String?,
+                forwardedIp: String?,
+                username: String?,
+                password: String?,
+                binName: String?,
+                binPhone: String?) {
         self.userId = userId
         self.sessionId = sessionId
         self.ssn = ssn
@@ -100,11 +98,12 @@ public final class RiskParams {
     }
 }
 
-//MARK: GenesisDescriptionProtocol
-extension RiskParams: GenesisDescriptionProtocol {
+// MARK: GenesisDescriptionProtocol
+extension RiskParams: GenesisDescriptionProtocol, XMLConvertable {
+
     func description() -> String {
         var xmlString = ""
-        
+
         xmlString += toXML(name: "user_id", value: userId)
         xmlString += toXML(name: "session_id", value: sessionId)
         xmlString += toXML(name: "ssn", value: ssn)
@@ -125,16 +124,7 @@ extension RiskParams: GenesisDescriptionProtocol {
         xmlString += toXML(name: "password", value: password)
         xmlString += toXML(name: "bin_name", value: binName)
         xmlString += toXML(name: "bin_phone", value: binPhone)
-        
+
         return xmlString
-    }
-    
-    
-    func toXML(name: String, value: String?) -> String {
-        guard let val = value else {
-            return ""
-        }
-        let xml = "<\(name)>" + val + "</\(name)>"
-        return xml
     }
 }

@@ -12,11 +12,16 @@ public protocol DataProtocol {
 }
 
 public extension DataProtocol {
+
     var regex: String {
         get {
-            return ""
+            ""
         }
+
+        // swiftlint:disable unused_setter_value
         set {
+            // do nothing
         }
+        // swiftlint:enable unused_setter_value
     }
 }

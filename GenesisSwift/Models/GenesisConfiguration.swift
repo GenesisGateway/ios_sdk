@@ -36,7 +36,7 @@ public struct Configuration {
     let language: ConfigLanguage
     let environment: ConfigEnvironment
     let endpoint: ConfigEndpoint
-    
+
 /// Default initialization
 ///
 /// - Parameters:
@@ -49,17 +49,16 @@ public struct Configuration {
                 language: ConfigLanguage,
                 environment: ConfigEnvironment,
                 endpoint: ConfigEndpoint) {
-        
         self.credentials = credentials
         self.language = language
         self.environment = environment
         self.endpoint = endpoint
     }
-    
+
     var urlString: String {
-        return "https://" + environment.rawValue + "wpf." + endpoint.rawValue + "/" + language.rawValue
+        "https://" + environment.rawValue + "wpf." + endpoint.rawValue + "/" + language.rawValue
     }
-    
+
     var serverURL: URL {
         guard let serverUrl = URL(string: urlString) else {
             return URL(string: "")!

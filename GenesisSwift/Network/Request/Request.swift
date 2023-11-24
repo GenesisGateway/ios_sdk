@@ -10,121 +10,137 @@ enum Path: String {
     case reconcile = "/wpf/reconcile"
 }
 
+// MARK: - RequestProtocol
+
 protocol RequestProtocol {
-    func path() -> String
-    func httpBody() -> Data?
-    func processingResponseString(string: String) -> Any?
+    var path: String { get }
+    var httpBody: Data? { get }
+
+    func processResponseString(_ string: String) -> Any?
 }
 
-typealias SuccessResponse = (Any!) -> Void
-typealias FailureBlock = (GenesisError!) -> Void
+// MARK: - Request
 
-class Request: NSObject {
-    var request: URLRequest?
-    
-    var successHandler: SuccessResponse?
-    var failureHandler: FailureBlock?
-    var responseString: String?
-    var parameters: [String: Any]?
- 
+class Request: RequestProtocol {
+
+    typealias SuccessHandler = (Any) -> Void
+    typealias FailureHandler = (GenesisError) -> Void
+
+    private let configuration: Configuration
+
+    private(set) var parameters: [String: Any]?
+    private(set) lazy var request: URLRequest = {
+        urlRequest(forConfiguration: configuration)
+    }()
+
     init(configuration: Configuration, parameters: [String: Any]?) {
-        super.init()
-        
-        self.request = self.urlRequest(forConfiguration: configuration)
+        self.configuration = configuration
         self.parameters = parameters
     }
-    
-    func urlRequest(forConfiguration configuration: Configuration) -> URLRequest {
-        let selfInstance = self.requestProtocolSelfInstance()
 
-        var request = URLRequest(url: URL(string: configuration.urlString + selfInstance.path())!)
+    var path: String {
+        assertionFailure("Descendant type must provide path")
+        return ""
+    }
+
+    var httpBody: Data? {
+        assertionFailure("Descendant type must provide httpBody")
+        return nil
+    }
+
+    func processResponseString(_ string: String) -> Any? {
+        assertionFailure("Descendant type must process response")
+        return nil
+    }
+}
+
+extension Request {
+
+    func execute(successHandler: @escaping SuccessHandler, failureHandler: @escaping FailureHandler) {
+
+        request.httpBody = httpBody
+        let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
+            if error != nil {
+                if let error = error as? GenesisError {
+                    failureHandler(error)
+                }
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                failureHandler(GenesisError(message: "Invalid response"))
+                return
+            }
+
+            let statusCode = httpResponse.statusCode
+            if statusCode == 200, let data = data {
+                guard let responseString = String(data: data, encoding: .utf8) else {
+                    let genesisError = GenesisError(code: GenesisErrorCode.eDataParsing.rawValue,
+                                                    technicalMessage: "",
+                                                    message: "Data parsing error")
+                    failureHandler(genesisError)
+                    return
+                }
+
+                self.handleSuccess(withResponseString: responseString, with: successHandler)
+            } else {
+                self.handleFailure(forStatusCode: statusCode, with: failureHandler)
+            }
+        }
+
+        dataTask.resume()
+    }
+}
+
+private extension Request {
+
+    func urlRequest(forConfiguration configuration: Configuration) -> URLRequest {
+        var request = URLRequest(url: URL(string: configuration.urlString + path)!)
         request.setValue("Basic \(configuration.credentials.encodedCredentialsBase64)", forHTTPHeaderField: "Authorization")
         request.setValue("text/xml", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        
         return request
     }
-    
-    func requestProtocolSelfInstance() -> RequestProtocol {
-        let selfInstance = self as? RequestProtocol
-        if selfInstance == nil {
-            assert(false, "need extension of RequestProtocol for the child")
+
+    func handleSuccess(withResponseString responseString: String, with successHandler: @escaping SuccessHandler) {
+        if let response = processResponseString(responseString) {
+            DispatchQueue.main.async {
+                successHandler(response)
+            }
         }
-        
-        return selfInstance!
     }
-    
-    func callSuccessWithResponseString(responseString: String) {
+
+    func handleFailure(forStatusCode statusCode: Int, with failureHandler: @escaping FailureHandler) {
+        var genesisError: GenesisError
+        switch statusCode {
+        case 401:
+            genesisError = GenesisError(code: GenesisErrorCode.e401.rawValue,
+                                        technicalMessage: "Authentication Error",
+                                        message: "")
+        case 404:
+            genesisError = GenesisError(code: GenesisErrorCode.e404.rawValue,
+                                        technicalMessage: "NotFound Error",
+                                        message: "")
+        case 426:
+            genesisError = GenesisError(code: GenesisErrorCode.e426.rawValue,
+                                        technicalMessage: "Upgrade Required Error",
+                                        message: "")
+        case 500:
+            genesisError = GenesisError(code: GenesisErrorCode.e500.rawValue,
+                                        technicalMessage: "Server Error",
+                                        message: "")
+        case 503:
+            genesisError = GenesisError(code: GenesisErrorCode.e503.rawValue,
+                                        technicalMessage: "Down for Maintenance Error",
+                                        message: "")
+        default:
+            genesisError = GenesisError(code: String(statusCode),
+                                        technicalMessage: "Error",
+                                        message: "")
+        }
+
         DispatchQueue.main.async {
-            let selfInstance = self.requestProtocolSelfInstance()
-            self.successHandler?(selfInstance.processingResponseString(string: responseString))
+            failureHandler(genesisError)
         }
-    }
-    
-    func execute(successHandler: SuccessResponse?, failureHandler: FailureBlock?) {
-        let selfInstance = self.requestProtocolSelfInstance()
-        
-        request!.httpBody = selfInstance.httpBody()
-        self.successHandler = successHandler
-        self.failureHandler = failureHandler
-        
-        let dataTask = URLSession.shared.dataTask(with: request!, completionHandler: { (data, response, error) in
-            if error != nil {
-                failureHandler?(error as! GenesisError)
-                return
-            }
-            
-            let httpResponse = response as! HTTPURLResponse
-            let statusCode = httpResponse.statusCode
-            if statusCode == 200 {
-                self.responseString = String(data: data!, encoding: .utf8)
-                guard (self.responseString != nil) else {
-                    let genesisError = GenesisError(code: GenesisErrorCode.eDataParsing.rawValue,
-                                                        technicalMessage: "",
-                                                        message: "Data parsing error")
-                    failureHandler?(genesisError)
-                    return
-                }
-                
-                self.callSuccessWithResponseString(responseString: self.responseString!)
-            } else {
-                var genesisError: GenesisError
-                switch statusCode {
-                case 401:
-                    genesisError = GenesisError(code: GenesisErrorCode.e401.rawValue,
-                                                        technicalMessage: "Authentication Error",
-                                                        message: "")
-                    break
-                case 404:
-                    genesisError = GenesisError(code: GenesisErrorCode.e404.rawValue,
-                                                        technicalMessage: "NotFound Error",
-                                                        message: "")
-                    break
-                case 426:
-                    genesisError = GenesisError(code: GenesisErrorCode.e426.rawValue,
-                                                        technicalMessage: "Upgrade Required Error",
-                                                        message: "")
-                    break
-                case 500:
-                    genesisError = GenesisError(code: GenesisErrorCode.e500.rawValue,
-                                                        technicalMessage: "Server Error",
-                                                        message: "")
-                    break
-                case 503:
-                    genesisError = GenesisError(code: GenesisErrorCode.e503.rawValue,
-                                                        technicalMessage: "Down for Maintenance Error",
-                                                        message: "")
-                default:
-                    genesisError = GenesisError(code: String(statusCode),
-                                                technicalMessage: "Error",
-                                                message: "")
-                    break
-                }
-                
-                failureHandler?(genesisError)
-            }
-        })
-        
-        dataTask.resume()
     }
 }

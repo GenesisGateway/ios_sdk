@@ -6,7 +6,7 @@
 import UIKit
 
 public class PaymentAddress {
-   
+
     public var firstName: String
     public var lastName: String
     public var address1: String
@@ -15,7 +15,7 @@ public class PaymentAddress {
     public var city: String
     public var state: String?
     public var country: IsoCountryInfo
-  
+
 /// Default initialization
 ///
 /// - Parameters:
@@ -36,7 +36,6 @@ public class PaymentAddress {
                 city: String = "",
                 state: String?,
                 country: IsoCountryInfo) {
-        
         self.firstName = firstName
         self.lastName = lastName
         self.address1 = address1
@@ -46,64 +45,55 @@ public class PaymentAddress {
         self.state = state
         self.country = country
     }
-    
+
     subscript(key: String) -> Any? {
-        get {
-            switch key {
-            case FirstNameKey: return firstName
-            case LastNameKey: return lastName
-            case Address1Key: return address1
-            case Address2Key: return address2
-            case ZipCodeKey: return zipCode
-            case CityKey: return city
-            case StateKey: return state
-            case CountryKey: return country.alpha2
-            default: return nil
-            }
+        switch key {
+        case PropertyKeys.FirstNameKey: return firstName
+        case PropertyKeys.LastNameKey: return lastName
+        case PropertyKeys.Address1Key: return address1
+        case PropertyKeys.Address2Key: return address2
+        case PropertyKeys.ZipCodeKey: return zipCode
+        case PropertyKeys.CityKey: return city
+        case PropertyKeys.StateKey: return state
+        case PropertyKeys.CountryKey: return country.alpha2
+        default: return nil
         }
     }
 }
 
-//MARK: GenesisDescriptionProtocol
+// MARK: - GenesisDescriptionProtocol
 extension PaymentAddress: GenesisDescriptionProtocol {
     func description() -> String {
-        return self.toXmlString()
+        toXmlString()
     }
-    
 }
 
-//MARK: ValidateInputDataProtocol
+// MARK: - ValidateInputDataProtocol
 extension PaymentAddress: ValidateInputDataProtocol {
     public func isValidData() throws {
         let requiredParameters = RequiredParameters.requiredParametersForAddress()
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
-        
-        do {
-            try validator.isValidAddress(address: self)
-        } catch {
-            throw error
-        }
+
+        try validator.isValidAddress(address: self)
     }
 }
 
-
-// MARK: GenesisXmlObjectProtocol
+// MARK: - GenesisXmlObjectProtocol
 extension PaymentAddress: GenesisXmlObjectProtocol {
-    func propertyMap() -> ([String : String]) {
-        return [
-            FirstNameKey: "first_name",
-            LastNameKey: "last_name",
-            Address1Key: "address1",
-            Address2Key: "address2",
-            ZipCodeKey: "zip_code",
-            CityKey: "city",
-            StateKey: "state",
-            CountryKey: "country"]
+    func propertyMap() -> [String: String] {
+        [PropertyKeys.FirstNameKey: "first_name",
+         PropertyKeys.LastNameKey: "last_name",
+         PropertyKeys.Address1Key: "address1",
+         PropertyKeys.Address2Key: "address2",
+         PropertyKeys.ZipCodeKey: "zip_code",
+         PropertyKeys.CityKey: "city",
+         PropertyKeys.StateKey: "state",
+         PropertyKeys.CountryKey: "country"]
     }
-    
+
     func toXmlString() -> String {
         var xmlString = ""
-        for (key, value) in self.propertyMap() {
+        for (key, value) in propertyMap() {
             guard let varValue = self[key] else { continue }
             xmlString += "<\(value)>" + String(describing: varValue) + "</\(value)>"
         }

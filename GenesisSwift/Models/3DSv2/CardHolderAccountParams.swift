@@ -123,7 +123,7 @@ extension ThreeDSV2Params.CardHolderAccountParams: GenesisDescriptionProtocol, X
         xmlString += toXML(name: "suspicious_activity_indicator", value: suspiciousActivityIndicator?.rawValue)
         xmlString += toXML(name: "registration_indicator", value: registrationIndicator?.rawValue)
         xmlString += toXML(name: "registration_date", value: registrationDate?.iso8601Date)
-        
+
         return xmlString
     }
 }

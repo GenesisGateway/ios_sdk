@@ -7,21 +7,27 @@ import XCTest
 @testable import iOS_Example
 @testable import GenesisSwift
 
-class TransactionDetailsViewControllerTests: XCTestCase {
-    var controller: TransactionDetailsViewController!
-    
+final class TransactionDetailsViewControllerTests: XCTestCase {
+    private var controller: TransactionDetailsViewController!
+
     override func setUp() {
         super.setUp()
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc: TransactionDetailsViewController = (storyboard.instantiateViewController(withIdentifier: "TransactionDetailsViewController") as? TransactionDetailsViewController)!
-        controller = vc
-        _ = controller.view
+        controller = nil
     }
-    
+
     override func tearDown() {
         super.tearDown()
-        
         controller = nil
+    }
+}
+
+extension TransactionDetailsViewControllerTests {
+
+    func testTransactionsDetailsViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "TransactionDetailsViewController") as? TransactionDetailsViewController
+        XCTAssertNotNil(vc)
+        controller = vc
+        _ = controller.view
     }
 }

@@ -12,8 +12,8 @@ final class HomeTableViewController: UITableViewController {
 
     private lazy var configurationData = ConfigurationData()
     private lazy var transactionTypes: [TransactionName] =
-    [.applePay, .authorize, .authorize3d, .sale, .sale3d, .paysafecard, .initRecurringSale, .initRecurringSale3d]
-            .sorted(by: { $0.rawValue < $1.rawValue })
+        [.applePay, .authorize, .authorize3d, .sale, .sale3d, .paysafecard, .initRecurringSale, .initRecurringSale3d]
+        .sorted { $0.rawValue < $1.rawValue }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,7 +141,7 @@ extension HomeTableViewController: CellDidChangeDelegate {
 
     func cellTextFieldDidChange(value: Any, indexPath: IndexPath) {
         var dataObject = configurationData.objects[indexPath.row]
-        dataObject.value = value as! String
+        dataObject.value = (value as? String).unwrap()
         configurationData.save()
     }
 

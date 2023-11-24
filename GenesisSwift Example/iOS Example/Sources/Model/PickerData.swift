@@ -15,7 +15,7 @@ extension IsoCountryInfo: PickerDataItem {
     public var pickerTitle: String {
         "\(name) - \(alpha2)"
     }
-    
+
     public var pickerValue: String {
         name
     }
@@ -25,7 +25,7 @@ extension CurrencyInfo: PickerDataItem {
     public var pickerTitle: String {
         name.rawValue
     }
-    
+
     public var pickerValue: String {
         name.rawValue
     }
@@ -50,7 +50,7 @@ public final class PickerData: ObjectDataProtocol {
     public var title: String
     public var value: String
     public var items: [PickerDataItem]
-    
+
     public init(title: String, value: String, items: [PickerDataItem]) {
         self.title = title
         self.value = value

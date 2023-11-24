@@ -5,27 +5,27 @@
 
 import Foundation
 
-class WPFResponse: Response {
-    var transactionId: String = String()
-    var timestamp: Date?
-    var amount: Double = Double()
-    var currency: String = String()
-    var redirectUrl: String = String()
-    
+final class WPFResponse: Response {
+    private(set) var transactionId = ""
+    private(set) var timestamp: Date?
+    private(set) var amount: Double = 0
+    private(set) var currency = ""
+    private(set) var redirectUrl = ""
+
     override func parser(foundCharacters string: String, forElementName elementName: String) {
         super.parser(foundCharacters: string, forElementName: elementName)
-        
+
         switch elementName {
         case "transaction_id":
-            self.transactionId = string
+            transactionId = string
         case "timestamp":
-            self.timestamp = string.dateFromISO8601
+            timestamp = string.dateFromISO8601
         case "amount":
-            self.amount = Double(string)!
+            amount = Double(string)!
         case "currency":
-            self.currency = string
+            currency = string
         case "redirect_url":
-            self.redirectUrl = string
+            redirectUrl = string
         default:
             break
         }

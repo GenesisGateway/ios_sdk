@@ -6,11 +6,13 @@
 import Foundation
 import GenesisSwift
 
+// swiftlint:disable file_length
+
 public final class InputData: NSObject {
 
     private let transactionName: TransactionName
 
-    private(set) lazy var transactionId = InputDataObject(title: Titles.transactionId.rawValue, value: "wev238f328nc" + String(arc4random_uniform(999999)))
+    private(set) lazy var transactionId = InputDataObject(title: Titles.transactionId.rawValue, value: Self.randomTransactionId())
     private(set) lazy var amount = ValidatedInputData(title: Titles.amount.rawValue, value: "1234.56", regex: Regex.amount)
     private(set) lazy var currency = PickerData(title: Titles.currency.rawValue, value: "USD", items: Currencies().allCurrencies)
     private(set) lazy var usage = InputDataObject(title: Titles.usage.rawValue, value: "Tickets")
@@ -22,7 +24,7 @@ public final class InputData: NSObject {
     private(set) lazy var address2 = InputDataObject(title: Titles.address2.rawValue, value: "")
     private(set) lazy var zipCode = InputDataObject(title: Titles.zipCode.rawValue, value: "11923")
     private(set) lazy var city = InputDataObject(title: Titles.city.rawValue, value: "New York City")
-    private(set) lazy var state =  InputDataObject(title: Titles.state.rawValue, value: "NY")
+    private(set) lazy var state = InputDataObject(title: Titles.state.rawValue, value: "NY")
     private(set) lazy var country = PickerData(title: Titles.country.rawValue, value: "United States", items: IsoCountries.allCountries)
     private(set) lazy var notificationUrl = InputDataObject(title: Titles.notificationUrl.rawValue, value: "https://example.com/notification")
     private(set) lazy var lifetime = ValidatedInputData(title: Titles.lifetime.rawValue, value: "30", regex: Regex.integer)
@@ -38,7 +40,6 @@ public final class InputData: NSObject {
     private(set) lazy var paymentSubtype = PickerData(title: Titles.paymentSubtype.rawValue,
                                                       value: PaymentSubtype.TypeValues.authorize.rawValue,
                                                       items: PaymentSubtype.TypeValues.allCases.map { EnumPickerItem($0.rawValue) })
-
 
     // managed recurring
     private(set) lazy var managedRecurringMode = PickerData(title: Titles.recurringMode.rawValue,
@@ -133,7 +134,7 @@ public final class InputData: NSObject {
     private(set) lazy var preOrderPurchaseIndicator =
         PickerData(title: Titles.preOrderPurchaseIndicator.rawValue,
                    value: ThreeDSV2Params.MerchantRiskParams.PreOrderPurchaseIndicatorValues.merchandiseAvailable.rawValue,
-               items: ThreeDSV2Params.MerchantRiskParams.PreOrderPurchaseIndicatorValues.allCases
+                   items: ThreeDSV2Params.MerchantRiskParams.PreOrderPurchaseIndicatorValues.allCases
                             .map { EnumPickerItem($0.rawValue) })
     private(set) lazy var preOrderDate = ValidatedInputData(title: Titles.preOrderDate.rawValue,
                                                             value: Date().iso8601Date,
@@ -250,13 +251,14 @@ public final class InputData: NSObject {
     private var allObjects: [ObjectDataProtocol] {
         var all = [ObjectDataProtocol]()
         all.append(contentsOf: defaultObjects)
-        let threeDSParams: [ObjectDataProtocol] = [challengeIndicator, challengeWindowSize,
-            category,
-            expirationDate, frequency,
-            shippingIndicator, deliveryTimeframe, reorderItemsIndicator, preOrderPurchaseIndicator, preOrderDate, giftCard, giftCardCount,
-            creationDate, updateIndicator, lastChangeDate, passwordChangeIndicator, passwordChangeDate, shippingAddressUsageIndicator,
-            shippingAddressDateFirstUsed, transactionsActivityLast24Hours, transactionsActivityPreviousYear, provisionAttemptsLast24Hours,
-            purchasesCountLast6Months, suspiciousActivityIndicator, registrationIndicator, registrationDate]
+        let threeDSParams: [ObjectDataProtocol] =
+            [challengeIndicator, challengeWindowSize,
+             category,
+             expirationDate, frequency,
+             shippingIndicator, deliveryTimeframe, reorderItemsIndicator, preOrderPurchaseIndicator, preOrderDate, giftCard, giftCardCount,
+             creationDate, updateIndicator, lastChangeDate, passwordChangeIndicator, passwordChangeDate, shippingAddressUsageIndicator,
+             shippingAddressDateFirstUsed, transactionsActivityLast24Hours, transactionsActivityPreviousYear, provisionAttemptsLast24Hours,
+             purchasesCountLast6Months, suspiciousActivityIndicator, registrationIndicator, registrationDate]
         all.append(contentsOf: threeDSParams)
         return all
     }
@@ -319,7 +321,7 @@ public final class InputData: NSObject {
         super.init()
         loadInputData()
     }
-    
+
     func save() {
         let data = Storage.convertInputDataToArray(inputArray: allObjects)
         UserDefaults.standard.set(data, forKey: Storage.Keys.commonData)
@@ -425,6 +427,10 @@ private extension InputData {
         case yes
         case no
     }
+
+    static func randomTransactionId() -> String {
+        "wev238f328nc\(Int.random(in: 1...999999))"
+    }
 }
 
 // MARK: - PaymentRequest creation
@@ -518,8 +524,10 @@ extension InputData {
         return threeDSV2Params
     }
 
-    var recurringTypeValue: RecurringType {
-        RecurringType(type: RecurringType.TypeValues(rawValue: recurringType.value) ?? .initial)
+    var recurringTypeValue: RecurringType? {
+        let recurringType = RecurringType(type: RecurringType.TypeValues(rawValue: recurringType.value) ?? .initial)
+
+        return [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) ? recurringType : nil
     }
 
     var recurringCategoryValue: RecurringCategory {
@@ -538,7 +546,7 @@ extension InputData {
         let channel = Reminder.ReminderChannel(rawValue: channel.value)!
         let after = Int(after.value) ?? 0
 
-        return [Reminder(channel: channel , after: after)]
+        return [Reminder(channel: channel, after: after)]
     }
 
     var paymentSubtypeValue: PaymentSubtype {
@@ -549,15 +557,16 @@ extension InputData {
 
         let paymentTransactionType = PaymentTransactionType(name: transactionName)
         paymentTransactionType.managedRecurring = managedRecurringParams
+        paymentTransactionType.recurringType = recurringTypeValue
 
         let paymentRequest = PaymentRequest(transactionId: transactionId.value,
-                                               amount: amount.value.explicitConvertionToDecimal()!,
-                                               currency: Currencies.findCurrencyInfoByName(name: currency.value)!,
-                                               customerEmail: customerEmail.value,
-                                               customerPhone: customerPhone.value,
-                                               billingAddress: paymentAddress,
-                                               transactionTypes: [paymentTransactionType],
-                                               notificationUrl: notificationUrl.value)
+                                            amount: amount.value.explicitConvertionToDecimal()!,
+                                            currency: Currencies.findCurrencyInfoByName(name: currency.value)!,
+                                            customerEmail: customerEmail.value,
+                                            customerPhone: customerPhone.value,
+                                            billingAddress: paymentAddress,
+                                            transactionTypes: [paymentTransactionType],
+                                            notificationUrl: notificationUrl.value)
         paymentRequest.usage = usage.value
 
         paymentRequest.lifetime = lifetimeValue
@@ -569,10 +578,6 @@ extension InputData {
 
         if paymentRequest.requires3DS {
             paymentRequest.threeDSV2Params = threeDSParams
-        }
-
-        if paymentRequest.requiresRecurringType {
-            paymentRequest.recurringType = recurringTypeValue
         }
 
         if paymentRequest.requiresRecurringCategory {
@@ -589,6 +594,7 @@ extension InputData {
 
 extension InputData {
 
+    // swiftlint:disable cyclomatic_complexity force_cast
     func loadInputData() {
         guard let storedData = UserDefaults.standard.array(forKey: Storage.Keys.commonData) as? [[String: String]] else {
             save()
@@ -674,7 +680,9 @@ extension InputData {
             }
         }
     }
-    
+    // swiftlint:enable cyclomatic_complexity force_cast
+
+    // swiftlint:disable cyclomatic_complexity
     func inputData(from inputArray: [[String: String]]) -> [GenesisSwift.DataProtocol] {
         var array = [GenesisSwift.DataProtocol]()
         for dictionary in inputArray {
@@ -792,4 +800,6 @@ extension InputData {
         }
         return array
     }
+    // swiftlint:enable cyclomatic_complexity
 }
+// swiftlint:enable file_length

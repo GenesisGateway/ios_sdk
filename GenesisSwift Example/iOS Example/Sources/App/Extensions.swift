@@ -29,8 +29,8 @@ extension Date {
 extension Optional {
 
     func unwrap(error: @autoclosure () -> String? = nil,
-                 file: StaticString = #file,
-                 line: UInt = #line) -> Wrapped {
+                file: StaticString = #file,
+                line: UInt = #line) -> Wrapped {
         guard let unwrapped = self else {
             var message = "Value was nil in \(file) at line \(line)"
             if let errorMessage = error() {

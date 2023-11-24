@@ -60,15 +60,15 @@ private extension ConfigurationData {
             save()
             return
         }
-        
+
         let inputData = inputData(from: storedData)
         for data in inputData {
             switch Titles(rawValue: data.title) {
-            case .username: username = data as! InputDataObject
-            case .password: password = data as! InputDataObject
-            case .language: language = data as! PickerData
-            case .environment: environment = data as! PickerData
-            case .endpoint: endpoint = data as! PickerData
+            case .username: username = (data as? InputDataObject).unwrap()
+            case .password: password = (data as? InputDataObject).unwrap()
+            case .language: language = (data as? PickerData).unwrap()
+            case .environment: environment = (data as? PickerData).unwrap()
+            case .endpoint: endpoint = (data as? PickerData).unwrap()
             default:
                 assertionFailure("Unknown title: \(data.title)")
             }
@@ -98,7 +98,6 @@ private extension ConfigurationData {
                         array.append(PickerData(title: title, value: value, items: ConfigEndpoint.allEndpoints))
                     default:
                         assertionFailure("Unknown title: \(title)")
-                        break
                     }
                 }
             }

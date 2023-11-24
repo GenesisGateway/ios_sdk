@@ -37,36 +37,36 @@ public struct BusinessAttributes {
 
     subscript(key: String) -> Any? {
         switch key {
-        case EventStartDateKey: return eventStartDate
-        case EventEndDateKey: return eventEndDate
-        case EventOrganizerIdKey: return eventOrganizerId
-        case EventIdKey: return eventId
-        case DateOfOrderKey: return dateOfOrder
-        case DeliveryDateKey: return deliveryDate
-        case NameOfTheSupplierKey: return nameOfTheSupplier
+        case PropertyKeys.EventStartDateKey: return eventStartDate
+        case PropertyKeys.EventEndDateKey: return eventEndDate
+        case PropertyKeys.EventOrganizerIdKey: return eventOrganizerId
+        case PropertyKeys.EventIdKey: return eventId
+        case PropertyKeys.DateOfOrderKey: return dateOfOrder
+        case PropertyKeys.DeliveryDateKey: return deliveryDate
+        case PropertyKeys.NameOfTheSupplierKey: return nameOfTheSupplier
         default: return nil
         }
     }
 }
 
-//MARK: GenesisDescriptionProtocol
+// MARK: GenesisDescriptionProtocol
 extension BusinessAttributes: GenesisDescriptionProtocol {
     func description() -> String {
         toXmlString()
     }
-
 }
 
 // MARK: GenesisXmlObjectProtocol
 extension BusinessAttributes: GenesisXmlObjectProtocol {
-    func propertyMap() -> [String : String] {
-        [EventStartDateKey: "event_start_date",
-           EventEndDateKey: "event_end_date",
-       EventOrganizerIdKey: "event_organizer_id",
-                EventIdKey: "event_id",
-            DateOfOrderKey: "date_of_order",
-           DeliveryDateKey: "delivery_date",
-      NameOfTheSupplierKey: "name_of_the_supplier"]
+
+    func propertyMap() -> [String: String] {
+        [PropertyKeys.EventStartDateKey: "event_start_date",
+         PropertyKeys.EventEndDateKey: "event_end_date",
+         PropertyKeys.EventOrganizerIdKey: "event_organizer_id",
+         PropertyKeys.EventIdKey: "event_id",
+         PropertyKeys.DateOfOrderKey: "date_of_order",
+         PropertyKeys.DeliveryDateKey: "delivery_date",
+         PropertyKeys.NameOfTheSupplierKey: "name_of_the_supplier"]
     }
 
     func toXmlString() -> String {

@@ -9,33 +9,30 @@
 import Foundation
 
 public class Credentials: NSObject {
-//    MARK: protected properties
-    var username: String = ""
-    var password: String = ""
-    
+
+    private(set) var username = ""
+    private(set) var password = ""
+
     var encodedCredentialsBase64: String {
-        get {
-            return self.stringToBase64String("\(self.username):\(self.password)")
-        }
+        stringToBase64String("\(username):\(password)")
     }
-    
-    public func setUsername(username: String) {
+
+    public func setUsername(_ username: String) {
         self.username = username
     }
-    
-    public func setPassword(password: String) {
+
+    public func setPassword(_ password: String) {
         self.password = password
     }
-    
+
     public convenience init(withUsername username: String, andPassword password: String) {
         self.init()
-        
+
         self.username = username
         self.password = password
     }
-    
+
     private func stringToBase64String(_ string: String) -> String {
-        let utf8str = string.data(using: String.Encoding.utf8)
-        return (utf8str?.base64EncodedString())!
+        Data(string.utf8).base64EncodedString()
     }
 }

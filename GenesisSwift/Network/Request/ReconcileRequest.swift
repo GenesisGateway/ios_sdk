@@ -5,20 +5,19 @@
 
 import Foundation
 
-class ReconcileRequest: Request, RequestProtocol {
-    func path() -> String {
-        return Path.reconcile.rawValue
+final class ReconcileRequest: Request {
+
+    override var path: String {
+        Path.reconcile.rawValue
     }
-    
-    func httpBody() -> Data? {
-        let reconcileRequest = Reconcile(uniqueId: self.parameters!["uniqueId"]! as! String)
-        
-        return reconcileRequest.toXmlString().data(using:.utf8)
+
+    override var httpBody: Data? {
+        guard let uniqueId = parameters?["uniqueId"] as? String else { return nil }
+        let reconcileRequest = Reconcile(uniqueId: uniqueId)
+        return reconcileRequest.toXmlString().data(using: .utf8)
     }
-    
-    func processingResponseString(string: String) -> Any? {
-        let response = ReconcileResponse(xmlString: string)
-        
-        return response
+
+    override func processResponseString(_ string: String) -> Any? {
+        ReconcileResponse(xmlString: string)
     }
 }

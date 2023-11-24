@@ -17,33 +17,33 @@ extension InputDataTests {
         XCTAssertEqual(sut.title, "fixed.title")
         XCTAssertEqual(sut.value, "fixed.value")
     }
-    
+
     func testDefaultInputData() {
         let data = InputData(transactionName: .sale)
         verifyInputData(data: data.objects)
     }
-    
+
     func testConverts() {
         let data = InputData(transactionName: .sale)
         let inputDataDefault = data.objects
-        
+
         let inputArray = Storage.convertInputDataToArray(inputArray: inputDataDefault)
-        
-        XCTAssertTrue(inputArray.count > 0)
-        
+
+        XCTAssertFalse(inputArray.isEmpty)
+
         let inputData = data.inputData(from: inputArray)
-        
+
         verifyInputData(data: inputData)
     }
-    
+
     func testSave() {
         let data = InputData(transactionName: .sale)
         data.address1.value = "New.fixed.address1"
         data.save()
-        
+
         let newData = InputData(transactionName: .sale)
         XCTAssertEqual(newData.address1.value, "New.fixed.address1")
-        
+
         newData.address1.value = "23, Doestreet"
         newData.save()
     }
@@ -54,14 +54,14 @@ extension InputDataTests {
         let salePaymentRequest = saleData.createPaymentRequest()
         XCTAssertFalse(salePaymentRequest.requires3DS)
         XCTAssertNil(salePaymentRequest.threeDSV2Params)
-        XCTAssertFalse(saleData.objects.contains(where: { $0 === saleData.challengeIndicator }))
+        XCTAssertFalse(saleData.objects.contains { $0 === saleData.challengeIndicator })
 
         let sale3DSData = InputData(transactionName: .sale3d)
         XCTAssertTrue(sale3DSData.requires3DS)
         let sale3DSPaymentRequest = sale3DSData.createPaymentRequest()
         XCTAssertTrue(sale3DSPaymentRequest.requires3DS)
         XCTAssertNotNil(sale3DSPaymentRequest.threeDSV2Params)
-        XCTAssertTrue(sale3DSData.objects.contains(where: { $0 === sale3DSData.challengeIndicator }))
+        XCTAssertTrue(sale3DSData.objects.contains { $0 === sale3DSData.challengeIndicator })
     }
 
     func testManagedRecurring() {
@@ -95,37 +95,51 @@ extension InputDataTests {
         var data = InputData(transactionName: .sale)
         XCTAssertTrue(data.supportsRecurringType)
         var request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .sale3d)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .authorize)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .authorize3d)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .initRecurringSale)
         XCTAssertFalse(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .initRecurringSale3d)
         XCTAssertFalse(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNil(type.recurringType)
+        }
 
         data = InputData(transactionName: .paysafecard)
         XCTAssertFalse(data.supportsRecurringType)
         request = data.createPaymentRequest()
-        XCTAssertNil(request.recurringType)
+        for type in request.transactionTypes {
+            XCTAssertNil(type.recurringType)
+        }
     }
 
     func testRecurringCategory() {
@@ -176,12 +190,11 @@ private extension InputDataTests {
         XCTAssertEqual(customerEmail.value, "john.doe@example.com")
 
         let country = data[13] as? PickerData
-
-        XCTAssertTrue(country != nil)
+        XCTAssertNotNil(country)
 
         XCTAssertEqual(country?.title, "Country")
         XCTAssertEqual(country?.value, "United States")
 
-        XCTAssertTrue(country!.items.count > 0)
+        XCTAssertFalse(country!.items.isEmpty)
     }
 }
