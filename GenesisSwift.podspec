@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "GenesisSwift"
-  s.version      = "1.4.0"
+  s.version      = "1.4.1"
   s.summary      = "iOS Genesis Payment Gateway"
   s.description  = "The iOS Genesis Payment Gateway Swift SDK."
   s.homepage     = "https://github.com/GenesisGateway/ios_sdk.git"
@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/GenesisGateway/ios_sdk.git", :tag => "#{s.version}" }
   s.source_files = 'GenesisSwift/**/*.{swift}'
-  s.swift_version = '4.0'
+  s.swift_version = '5.0'
   s.framework = "UIKit", "Foundation"
 end

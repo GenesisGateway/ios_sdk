@@ -113,3 +113,5 @@ file_length:
 large_tuple:
   warning: 5
   error: 8
+
+cyclomatic_complexity: 15

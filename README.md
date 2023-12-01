@@ -295,13 +295,14 @@ paymentRequest.paymentSubtype = paymentSubtype
 - Authorize, Authorize3d, Sale, Sale3d
 
 ```swift
-let paymentTransactionTypes = [PaymentTransactionType(name: .authorize), PaymentTransactionType(name: .sale), ...]
-let recurringType = RecurringType(type: .subsequent)
+let authorizeTransactionType = PaymentTransactionType(name: .authorize)
+authorizeTransactionType.recurringType = RecurringType(type: .initial)
 
-paymentRequest.transactionTypes = paymentTransactionTypes
+let saleTransactionType = PaymentTransactionType(name: .sale)
+saleTransactionType.recurringType = RecurringType(type: .subsequent)
 
-// recurringType is required for Authorize, Authorize3d, Sale, Sale3d transactions
-paymentRequest.recurringType = recurringType
+// recurringType is required for Authorize, Authorize3d, Sale, Sale3d transaction types
+paymentRequest.transactionTypes = [authorizeTransactionType, saleTransactionType]
 ```
 
 - Init Recurring Sale, Init Recurring Sale3d

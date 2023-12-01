@@ -11,14 +11,6 @@ class PickerDataTests: XCTestCase {
 
     private var sut: PickerData!
 
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testPickerData() {
         let item1 = IsoCountryInfo(name: "item1.name", numeric: "item1.numeric", alpha2: "item1.alpha2", alpha3: "item1.alpha3",
                                    calling: "item1.calling", currency: "item1.currency", continent: "item1.continent")
