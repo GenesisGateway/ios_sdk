@@ -21,7 +21,7 @@ final class WPFResponse: Response {
         case "timestamp":
             timestamp = string.dateFromISO8601
         case "amount":
-            amount = Double(string)!
+            amount = Double(string) ?? 0
         case "currency":
             currency = string
         case "redirect_url":

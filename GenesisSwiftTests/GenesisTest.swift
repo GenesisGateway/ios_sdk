@@ -76,18 +76,31 @@ final class GenesisTest: XCTestCase {
 // MARK: - GenesisDelegate
 extension GenesisTest: GenesisDelegate {
 
-    func genesisDidFinishLoading() {
+    func genesisDidFinishLoading(userInfo: [AnyHashable: Any]) {
+        print("Loading transaction: \(userInfo[GenesisInfoKeys.uniqueId]!)")
     }
 
-    func genesisDidEndWithSuccess() {
+    func genesisDidEndWithSuccess(userInfo: [AnyHashable: Any]) {
+        print("""
+        Transaction succeeded
+        uniqueId: \(userInfo[GenesisInfoKeys.uniqueId]!),
+        status: \(userInfo[GenesisInfoKeys.status]!),
+        transactionId: \(userInfo[GenesisInfoKeys.transactionId]!),
+        timestamp: \((userInfo[GenesisInfoKeys.timestamp] as? Date)!),
+        amount: \((userInfo[GenesisInfoKeys.timestamp] as? Double)!),
+        currency: \(userInfo[GenesisInfoKeys.currency]!)
+        """)
     }
 
-    func genesisDidEndWithFailure(errorCode: GenesisError) {
+    func genesisDidEndWithCancel(userInfo: [AnyHashable: Any]) {
+        print("Transaction cancelled: \(userInfo[GenesisInfoKeys.uniqueId]!)")
     }
 
-    func genesisDidEndWithCancel() {
+    func genesisDidEndWithFailure(userInfo: [AnyHashable: Any], errorCode: GenesisError) {
+        print("Transaction failed: \(userInfo[GenesisInfoKeys.uniqueId] ?? "N/A")")
     }
 
     func genesisValidationError(error: GenesisValidationError) {
+        print("Error: \(error.errorUserInfo)")
     }
 }

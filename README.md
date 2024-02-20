@@ -12,12 +12,12 @@
 
 ## Requirements
 
-- iOS 9.0+
-- Xcode 9.2
+- iOS 12.0+
+- Xcode 10.0+
 
 ## Installation
 
-GenesisSwift requires Swift 4, so make sure you have [Xcode 9](https://developer.apple.com/xcode/downloads/).
+GenesisSwift requires Swift 5, so make sure you have at least [Xcode 10](https://developer.apple.com/xcode/downloads/).
 
 ### CocoaPods
 
@@ -107,24 +107,36 @@ show(genesisViewController, sender: nil)
 // MARK: - GenesisDelegate
 extension YourViewController: GenesisDelegate {
 
-    func genesisDidFinishLoading() {
+    func genesisDidFinishLoading(userInfo: [AnyHashable: Any]) {
+        print("Loading transaction: \(userInfo[GenesisInfoKeys.uniqueId]!)")
         ...
     }
 
-    func genesisDidEndWithSuccess() {
+    func genesisDidEndWithSuccess(userInfo: [AnyHashable: Any]) {
+        print("""
+        Transaction succeeded
+        uniqueId: \(userInfo[GenesisInfoKeys.uniqueId]!),
+        status: \(userInfo[GenesisInfoKeys.status]!),
+        transactionId: \(userInfo[GenesisInfoKeys.transactionId]!),
+        timestamp: \((userInfo[GenesisInfoKeys.timestamp] as? Date)!),
+        amount: \((userInfo[GenesisInfoKeys.timestamp] as? Double)!),
+        currency: \(userInfo[GenesisInfoKeys.currency]!)
+        """)
         ...
     }
 
-    func genesisDidEndWithFailure(errorCode: GenesisErrorCode) {
+    func genesisDidEndWithCancel(userInfo: [AnyHashable: Any]) {
+        print("Transaction cancelled: \(userInfo[GenesisInfoKeys.uniqueId]!)")
         ...
     }
 
-    func genesisDidEndWithCancel() {
+    func genesisDidEndWithFailure(userInfo: [AnyHashable: Any], errorCode: GenesisError) {
+        print("Transaction failed: \(userInfo[GenesisInfoKeys.uniqueId] ?? "N/A")")
         ...
     }
-    
+
     func genesisValidationError(error: GenesisValidationError) {
-        print(error.errorUserInfo)
+        print("Parameter(s) validation error: \(error.errorUserInfo)")
         ...
     }
 }

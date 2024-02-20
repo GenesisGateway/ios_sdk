@@ -5,11 +5,21 @@
 
 import UIKit
 
+public enum GenesisInfoKeys {
+    public static let uniqueId = "uniqueId" // String
+    public static let status = "status" // String
+    public static let transactionId = "transactionId" // String
+    public static let timestamp = "timestamp" // Date
+    public static let amount = "amount" // Double
+    public static let currency = "currency" // String
+    public static let redirectUrl = "redirectUrl" // String
+}
+
 public protocol GenesisDelegate: AnyObject {
-    func genesisDidFinishLoading()
-    func genesisDidEndWithSuccess()
-    func genesisDidEndWithCancel()
-    func genesisDidEndWithFailure(errorCode: GenesisError)
+    func genesisDidFinishLoading(userInfo: [AnyHashable: Any])
+    func genesisDidEndWithSuccess(userInfo: [AnyHashable: Any])
+    func genesisDidEndWithCancel(userInfo: [AnyHashable: Any])
+    func genesisDidEndWithFailure(userInfo: [AnyHashable: Any], errorCode: GenesisError)
     func genesisValidationError(error: GenesisValidationError)
 }
 
@@ -104,28 +114,28 @@ public class Genesis: NSObject {
 
 extension Genesis: GenesisWebViewDelegate {
 
-    func genesisWebViewDidFinishLoading() {
+    func genesisWebViewDidFinishLoading(_ userInfo: [AnyHashable: Any]) {
         genesisVC.indicator.stopAnimating()
         genesisVC.addView((genesisWebView?.webView)!)
 
-        delegate.genesisDidFinishLoading()
+        delegate.genesisDidFinishLoading(userInfo: userInfo)
     }
 
-    func genesisWebViewDidEndWithSuccess() {
+    func genesisWebViewDidEndWithSuccess(_ userInfo: [AnyHashable: Any]) {
         back(animated: animatedBack)
 
-        delegate.genesisDidEndWithSuccess()
+        delegate.genesisDidEndWithSuccess(userInfo: userInfo)
     }
 
-    func genesisWebViewDidEndWithCancel() {
+    func genesisWebViewDidEndWithCancel(_ userInfo: [AnyHashable: Any]) {
         back(animated: animatedBack)
 
-        delegate.genesisDidEndWithCancel()
+        delegate.genesisDidEndWithCancel(userInfo: userInfo)
     }
 
-    func genesisWebViewDidEndWithFailure(errorCode: GenesisError) {
+    func genesisWebViewDidEndWithFailure(_ userInfo: [AnyHashable: Any], errorCode: GenesisError) {
         back(animated: animatedBack)
 
-        delegate.genesisDidEndWithFailure(errorCode: errorCode)
+        delegate.genesisDidEndWithFailure(userInfo: userInfo, errorCode: errorCode)
     }
 }

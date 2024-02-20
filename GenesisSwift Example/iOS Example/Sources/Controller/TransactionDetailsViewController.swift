@@ -149,24 +149,29 @@ extension TransactionDetailsViewController: UITableViewDelegate {
 
 // MARK: - GenesisDelegate
 extension TransactionDetailsViewController: GenesisDelegate {
-    func genesisDidFinishLoading() {
-        // empty
+
+    func genesisDidFinishLoading(userInfo: [AnyHashable: Any]) {
+        let uniqueId = userInfo[GenesisInfoKeys.uniqueId] ?? "N/A"
+        print("Loading transaction: \(uniqueId)")
     }
 
-    func genesisDidEndWithSuccess() {
-        presentAlertWithTitle("Success", andMessage: "Success transaction")
+    func genesisDidEndWithSuccess(userInfo: [AnyHashable: Any]) {
+        let uniqueId = userInfo[GenesisInfoKeys.uniqueId]!
+        presentAlertWithTitle("Success", andMessage: "Success transaction: \(uniqueId)")
     }
 
-    func genesisDidEndWithFailure(errorCode: GenesisError) {
+    func genesisDidEndWithFailure(userInfo: [AnyHashable: Any], errorCode: GenesisError) {
+        let uniqueId = userInfo[GenesisInfoKeys.uniqueId] ?? "N/A"
         let code = errorCode.code ?? "unknown"
         let technical = errorCode.technicalMessage ?? "unknown"
         let message = errorCode.message ?? "unknown"
-        let details = "code: \(code)\n technical: \(technical)\n message: \(message)"
+        let details = "code: \(code)\ntechnical: \(technical)\nmessage: \(message)\nuniqueId: \(uniqueId)"
         presentAlertWithTitle("Failure", andMessage: details)
     }
 
-    func genesisDidEndWithCancel() {
-        presentAlertWithTitle("Canceled")
+    func genesisDidEndWithCancel(userInfo: [AnyHashable: Any]) {
+        let uniqueId = userInfo[GenesisInfoKeys.uniqueId] ?? "N/A"
+        presentAlertWithTitle("Cancelled", andMessage: "Cancelled transaction: \(uniqueId)")
     }
 
     func genesisValidationError(error: GenesisValidationError) {
