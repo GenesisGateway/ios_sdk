@@ -65,7 +65,6 @@ extension Reminder: ValidateInputDataProtocol {
     public func isValidData() throws {
         let requiredParamters = RequiredParameters.requiredParametersForReminder()
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParamters)
-
-        try validator.isValidReminder(reminder: self)
+        try validator.validateReminder(self)
     }
 }

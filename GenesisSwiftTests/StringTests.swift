@@ -9,6 +9,8 @@ import XCTest
 final class StringTests: XCTestCase {
 }
 
+// MARK: - Tests
+
 extension StringTests {
 
     func testConvertionToDecimal() {

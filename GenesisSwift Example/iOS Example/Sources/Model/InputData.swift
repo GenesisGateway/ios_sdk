@@ -201,13 +201,11 @@ public final class InputData: NSObject {
                                                                 value: Date().dateBySubstracting(2, from: .year)!.iso8601Date,
                                                                 regex: Regex.date)
     private(set) lazy var recurringType = PickerData(title: Titles.recurringType.rawValue,
-                                                     value: RecurringType.TypeValues.initial.rawValue,
-                                                     items: RecurringType.TypeValues.allCases
-                                                     .map { EnumPickerItem($0.rawValue) })
+                                                     value: RecurringTypePickerValues.notAvailable.rawValue,
+                                                     items: RecurringTypePickerValues.allCases.map { EnumPickerItem($0.rawValue) })
     private(set) lazy var recurringCategory = PickerData(title: Titles.recurringCategory.rawValue,
-                                                         value: RecurringCategory.CategoryValues.subscription.rawValue,
-                                                         items: RecurringCategory.CategoryValues.allCases
-                                                         .map { EnumPickerItem($0.rawValue) })
+                                                         value: RecurringCategoryPickerValues.notAvailable.rawValue,
+                                                         items: RecurringCategoryPickerValues.allCases.map { EnumPickerItem($0.rawValue) })
 
     private var defaultObjects: [ObjectDataProtocol] {
         var all: [ObjectDataProtocol] = [transactionId, amount, currency, usage, customerEmail, customerPhone,
@@ -405,6 +403,29 @@ extension InputData {
         case automatic
         case manual
     }
+
+    enum RecurringTypePickerValues: String, CaseIterable {
+        case notAvailable = "N/A"
+        case initial
+        case managed
+        case subsequent
+
+        var recurringType: RecurringType? {
+            guard let type = RecurringType.TypeValues(rawValue: rawValue) else { return nil }
+            return RecurringType(type: type)
+        }
+    }
+
+    enum RecurringCategoryPickerValues: String, CaseIterable {
+        case notAvailable = "N/A"
+        case subscription
+        case standingOrder = "standing_order"
+
+        var recurringCategory: RecurringCategory? {
+            guard let category = RecurringCategory.CategoryValues(rawValue: rawValue) else { return nil }
+            return RecurringCategory(category: category)
+        }
+    }
 }
 
 private extension InputData {
@@ -525,13 +546,19 @@ extension InputData {
     }
 
     var recurringTypeValue: RecurringType? {
-        let recurringType = RecurringType(type: RecurringType.TypeValues(rawValue: recurringType.value) ?? .initial)
-
-        return [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) ? recurringType : nil
+        if [.authorize, .authorize3d, .sale, .sale3d].contains(transactionName) {
+           return RecurringTypePickerValues(rawValue: recurringType.value)?.recurringType
+        } else {
+            return nil
+        }
     }
 
-    var recurringCategoryValue: RecurringCategory {
-        RecurringCategory(category: RecurringCategory.CategoryValues(rawValue: recurringCategory.value) ?? .subscription)
+    var recurringCategoryValue: RecurringCategory? {
+        if [.initRecurringSale, .initRecurringSale3d].contains(transactionName) {
+           return RecurringCategoryPickerValues(rawValue: recurringCategory.value)?.recurringCategory
+        } else {
+            return nil
+        }
     }
 
     var lifetimeValue: Int {
@@ -568,8 +595,8 @@ extension InputData {
                                             transactionTypes: [paymentTransactionType],
                                             notificationUrl: notificationUrl.value)
         paymentRequest.usage = usage.value
-
         paymentRequest.lifetime = lifetimeValue
+        paymentRequest.recurringCategory = recurringCategoryValue
 
         if let payLaterValue, payLaterValue {
             paymentRequest.payLater = payLaterValue
@@ -578,10 +605,6 @@ extension InputData {
 
         if paymentRequest.requires3DS {
             paymentRequest.threeDSV2Params = threeDSParams
-        }
-
-        if paymentRequest.requiresRecurringCategory {
-            paymentRequest.recurringCategory = recurringCategoryValue
         }
 
         if paymentRequest.requiresPaymentSubtype {

@@ -8,19 +8,15 @@ import Foundation
 public extension String {
 
     func explicitConvertionToDecimal() -> Decimal? {
-        struct StaticFormatter {
-            static let formatter: NumberFormatter = {
-                let tmpFormatter = NumberFormatter()
-                tmpFormatter.generatesDecimalNumbers = true
-                tmpFormatter.numberStyle = NumberFormatter.Style.decimal
-                return tmpFormatter
+        enum StaticFormatter {
+            static let decimalFormatter: NumberFormatter = {
+                let formatter = NumberFormatter()
+                formatter.generatesDecimalNumbers = true
+                formatter.numberStyle = .decimal
+                return formatter
             }()
         }
 
-        if let decimalNumber = StaticFormatter.formatter.number(from: self) as? Decimal {
-            return decimalNumber
-        }
-
-        return nil
+        return StaticFormatter.decimalFormatter.number(from: self) as? Decimal
     }
 }

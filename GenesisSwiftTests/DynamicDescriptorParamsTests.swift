@@ -10,6 +10,16 @@ final class DynamicDescriptorParamsTests: XCTestCase {
 
     private var sut: DynamicDescriptorParams!
 
+    override func tearDown() {
+        super.tearDown()
+        sut = nil
+    }
+}
+
+// MARK: - Tests
+
+extension DynamicDescriptorParamsTests {
+
     func testFullNames() {
         sut = DynamicDescriptorParams(merchantName: "fixed.name", merchantCity: "fixed.city", subMerchantId: nil)
         XCTAssertEqual(sut.merchantName, "fixed.name")

@@ -58,14 +58,14 @@ private extension HomeTableViewController {
     }
 
     @IBAction func privacyPolicyButtonPressed() {
-        openURLString(urlString: "https://www.genesissupport247.com/privacy-policy/")
+        openURLString("https://www.genesissupport247.com/privacy-policy/")
     }
 
     @IBAction func termsAndConditionsButtonPressed() {
-        openURLString(urlString: "https://www.genesissupport247.com/terms-conditions/")
+        openURLString("https://www.genesissupport247.com/terms-conditions/")
     }
 
-    func openURLString(urlString: String) {
+    func openURLString(_ urlString: String) {
         if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         } else {

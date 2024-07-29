@@ -73,8 +73,7 @@ extension PaymentAddress: ValidateInputDataProtocol {
     public func isValidData() throws {
         let requiredParameters = RequiredParameters.requiredParametersForAddress()
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
-
-        try validator.isValidAddress(address: self)
+        try validator.validateAddress(self)
     }
 }
 

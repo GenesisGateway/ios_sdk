@@ -8,7 +8,14 @@ import XCTest
 
 final class RiskParamsTests: XCTestCase {
     private var sut: RiskParams!
+
+    override func tearDown() {
+        super.tearDown()
+        sut = nil
+    }
 }
+
+// MARK: - Tests
 
 extension RiskParamsTests {
 

@@ -96,28 +96,38 @@ extension InputDataTests {
         XCTAssertTrue(data.supportsRecurringType)
         var request = data.createPaymentRequest()
         for type in request.transactionTypes {
-            XCTAssertNotNil(type.recurringType)
+            XCTAssertNil(type.recurringType) // not set explicitly
+        }
+        data.recurringType.value = InputData.RecurringTypePickerValues.initial.rawValue
+        request = data.createPaymentRequest()
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType) // set explicitly
         }
 
         data = InputData(transactionName: .sale3d)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
         for type in request.transactionTypes {
-            XCTAssertNotNil(type.recurringType)
+            XCTAssertNil(type.recurringType) // not set explicitly
+        }
+        data.recurringType.value = InputData.RecurringTypePickerValues.subsequent.rawValue
+        request = data.createPaymentRequest()
+        for type in request.transactionTypes {
+            XCTAssertNotNil(type.recurringType) // set explicitly
         }
 
         data = InputData(transactionName: .authorize)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
         for type in request.transactionTypes {
-            XCTAssertNotNil(type.recurringType)
+            XCTAssertNil(type.recurringType) // not set explicitly
         }
 
         data = InputData(transactionName: .authorize3d)
         XCTAssertTrue(data.supportsRecurringType)
         request = data.createPaymentRequest()
         for type in request.transactionTypes {
-            XCTAssertNotNil(type.recurringType)
+            XCTAssertNil(type.recurringType) // not set explicitly
         }
 
         data = InputData(transactionName: .initRecurringSale)
@@ -147,12 +157,18 @@ extension InputDataTests {
         var data = InputData(transactionName: .initRecurringSale)
         XCTAssertTrue(data.supportsRecurringCategory)
         var request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringCategory)
+        XCTAssertNil(request.recurringCategory) // not set explicitly
+        data.recurringCategory.value = InputData.RecurringCategoryPickerValues.subscription.rawValue
+        request = data.createPaymentRequest()
+        XCTAssertNotNil(request.recurringCategory) // set explicitly
 
         data = InputData(transactionName: .initRecurringSale3d)
         XCTAssertTrue(data.supportsRecurringCategory)
         request = data.createPaymentRequest()
-        XCTAssertNotNil(request.recurringCategory)
+        XCTAssertNil(request.recurringCategory) // not set explicitly
+        data.recurringCategory.value = InputData.RecurringCategoryPickerValues.standingOrder.rawValue
+        request = data.createPaymentRequest()
+        XCTAssertNotNil(request.recurringCategory) // set explicitly
 
         data = InputData(transactionName: .sale)
         XCTAssertFalse(data.supportsRecurringCategory)

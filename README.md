@@ -12,12 +12,12 @@
 
 ## Requirements
 
-- iOS 12.0+
-- Xcode 10.0+
+- iOS 12+
+- Xcode 12+
 
 ## Installation
 
-GenesisSwift requires Swift 5, so make sure you have at least [Xcode 10](https://developer.apple.com/xcode/downloads/).
+GenesisSwift requires Swift 5, so make sure you have at least [Xcode 12](https://developer.apple.com/xcode/downloads/).
 
 ### CocoaPods
 
@@ -92,15 +92,13 @@ let genesis = Genesis(withConfiguration: configuration, paymentRequest: paymentR
 //Push to navigation controller
 genesis.push(toNavigationController: navigationController!, animated: true)
 
-//Present to modal view
+//or present to modal view
 genesis.present(toViewController: self, animated: true)
 
-//Use genesis.genesisViewController() and show how you want
-guard let genesisViewController = genesis.genesisViewController() else {
-    return
+//or use genesis.genesisViewController() to show it
+if let genesisViewController = genesis.genesisViewController() {
+    show(genesisViewController, sender: nil)    
 }
-show(genesisViewController, sender: nil)
-
 
 ...
 
@@ -268,7 +266,7 @@ paymentRequest.threeDSV2Params = threeDSV2Params
 Check input data
 
 ```swift
-//This will check all setted data
+// Validate all of the configured data per request
 do {
     try paymentRequest.isValidData()
 } catch {
@@ -290,7 +288,7 @@ do {
 }
 ```
 
-## Required parameters for transaction types
+## Additional parameters for transaction types
 
 - ApplePay
 
@@ -313,7 +311,7 @@ authorizeTransactionType.recurringType = RecurringType(type: .initial)
 let saleTransactionType = PaymentTransactionType(name: .sale)
 saleTransactionType.recurringType = RecurringType(type: .subsequent)
 
-// recurringType is required for Authorize, Authorize3d, Sale, Sale3d transaction types
+// recurringType can be set for Authorize, Authorize3d, Sale, and Sale3d transaction types (or can be omitted depending on the use case)
 paymentRequest.transactionTypes = [authorizeTransactionType, saleTransactionType]
 ```
 
@@ -325,7 +323,7 @@ let recurringCategory = RecurringCategory(category: .subscription)
 
 paymentRequest.transactionTypes = paymentTransactionTypes
 
-// recurringCategory is required for Init Recurring Sale, Init Recurring Sale3d
+// recurringCategory can be set for Init Recurring Sale and Init Recurring Sale3d transaction types (or can be omitted depending on the use case)
 paymentRequest.recurringCategory = recurringCategory
 ```
 

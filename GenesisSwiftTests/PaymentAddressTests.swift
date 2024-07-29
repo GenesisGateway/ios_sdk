@@ -8,6 +8,11 @@ import XCTest
 
 final class PaymentAddressTests: XCTestCase {
     private var sut: PaymentAddress!
+
+    override func tearDown() {
+        super.tearDown()
+        sut = nil
+    }
 }
 
 // MARK: - Tests

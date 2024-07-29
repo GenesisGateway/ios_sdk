@@ -535,6 +535,44 @@ extension PaymentRequestTests {
         let xml = sut.toXmlString()
         XCTAssertEqual("subscription", xmlValue(inTag: "recurring_category", from: xml))
     }
+
+    func testOptionalRecurringParameters() {
+
+        sut.customerEmail = "customer@mail.com"
+        sut.notificationUrl = "https://google.com"
+
+        // test the optionality of both recurringType & recurringCategory (regardless of transaction type)
+
+        sut.transactionTypes = [PaymentTransactionType(name: .initRecurringSale)]
+        sut.transactionTypes.first?.recurringType = nil
+        sut.recurringCategory = nil
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertFalse(sut.requiresRecurringCategory)
+        XCTAssertFalse(sut.requiresRecurringType)
+        var xml = sut.toXmlString()
+        XCTAssertNil(xmlValue(inTag: "recurring_category", from: xml))
+        XCTAssertNil(xmlValue(inTag: "recurring_type", from: xml))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .sale)]
+        sut.transactionTypes.first?.recurringType = nil
+        sut.recurringCategory = nil
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertFalse(sut.requiresRecurringCategory)
+        XCTAssertFalse(sut.requiresRecurringType)
+        xml = sut.toXmlString()
+        XCTAssertNil(xmlValue(inTag: "recurring_category", from: xml))
+        XCTAssertNil(xmlValue(inTag: "recurring_type", from: xml))
+
+        sut.transactionTypes = [PaymentTransactionType(name: .sale)]
+        sut.transactionTypes.first?.recurringType = RecurringType(type: .subsequent)
+        sut.recurringCategory = nil
+        XCTAssertNoThrow(try sut.isValidData())
+        XCTAssertFalse(sut.requiresRecurringCategory)
+        XCTAssertFalse(sut.requiresRecurringType)
+        xml = sut.toXmlString()
+        XCTAssertNil(xmlValue(inTag: "recurring_category", from: xml))
+        XCTAssertEqual("subsequent", xmlValue(inTag: "recurring_type", from: xml))
+    }
 }
 
 private extension PaymentRequestTests {
@@ -619,10 +657,8 @@ private extension PaymentRequestTests {
     }
 
     func xmlValue(inTag tag: String, from xml: String) -> String? {
-
         let startTag = "<\(tag)>"
         let endTag = "</\(tag)>"
-
         return valueBetween(start: startTag, end: endTag, in: xml)
     }
 }

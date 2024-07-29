@@ -57,15 +57,15 @@ public final class PaymentRequest {
     }
 
     public var requiresRecurringType: Bool {
-        // the request requires RecurringType if any of its specified types require it
-        let requiredTypes: Set<TransactionName> = [.sale, .sale3d, .authorize, .authorize3d]
-        return isParameterRequired(for: requiredTypes)
+        // .sale, .sale3d, .authorize & .authorize3d may contain a recurring type parameter, but it is not required
+        // retain for backward compatibility and future requirements' changes
+        false
     }
 
     public var requiresRecurringCategory: Bool {
-        // the request requires RecurringCategory if any of its specified types require it
-        let requiredTypes: Set<TransactionName> = [.initRecurringSale, .initRecurringSale3d]
-        return isParameterRequired(for: requiredTypes)
+        // .initRecurringSale & .initRecurringSale3d may contain a recurring category parameter, but it is not required
+        // retain for backward compatibility and future requirements' changes
+        false
     }
 
     public var requiresPaymentSubtype: Bool {
@@ -263,7 +263,7 @@ extension PaymentRequest: ValidateInputDataProtocol {
         let requiredParameters = RequiredParameters.requiredParametersForRequest(paymentRequest: self)
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
 
-        try validator.isValidRequest(request: self)
+        try validator.validateRequest(self)
     }
 }
 

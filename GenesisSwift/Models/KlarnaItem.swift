@@ -97,7 +97,7 @@ extension KlarnaItem: ValidateInputDataProtocol {
     public func isValidData() throws {
         let requiredParameters = RequiredParameters.requiredParametersForKlarnaItem()
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
-        try validator.isValidKlarnaItem(item: self)
+        try validator.validateKlarnaItem(self)
     }
 }
 

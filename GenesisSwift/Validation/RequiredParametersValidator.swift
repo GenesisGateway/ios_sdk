@@ -18,7 +18,7 @@ class RequiredParametersValidator {
         self.parameters = parameters
     }
 
-    func isValidRequest(request: PaymentRequest) throws {
+    func validateRequest(_ request: PaymentRequest) throws {
         path = "PaymentRequest"
         resetArrays()
 
@@ -31,7 +31,7 @@ class RequiredParametersValidator {
         try throwErrorIfExists()
     }
 
-    func isValidAddress(address: PaymentAddress) throws {
+    func validateAddress(_ address: PaymentAddress) throws {
         path = "PaymentAddress"
         resetArrays()
 
@@ -46,7 +46,7 @@ class RequiredParametersValidator {
         try throwErrorIfExists()
     }
 
-    func isValidTransactionType(transactionType: PaymentTransactionType) throws {
+    func validateTransactionType(_ transactionType: PaymentTransactionType) throws {
         path = "PaymentTransactionTypes[\(transactionType.name)]"
         resetArrays()
 
@@ -57,7 +57,7 @@ class RequiredParametersValidator {
         try throwErrorIfExists()
     }
 
-    func isValidKlarnaItem(item: KlarnaItem) throws {
+    func validateKlarnaItem(_ item: KlarnaItem) throws {
         path = "items"
         resetArrays()
 
@@ -68,7 +68,7 @@ class RequiredParametersValidator {
         try throwErrorIfExists()
     }
 
-    func isValidReminder(reminder: Reminder) throws {
+    func validateReminder(_ reminder: Reminder) throws {
         path = "reminder"
         resetArrays()
 
@@ -120,7 +120,7 @@ class RequiredParametersValidator {
         return !transactionsNames.isDisjoint(with: transactionTypes.map { $0.name })
     }
 
-    private func isURLParameter(parameter: String) -> Bool {
+    private func isURLParameter(_ parameter: String) -> Bool {
         parameter == PropertyKeys.NotificationUrlKey ||
         parameter == PropertyKeys.ReturnSuccessUrlKey ||
         parameter == PropertyKeys.ReturnFailureUrlKey ||
@@ -131,7 +131,7 @@ class RequiredParametersValidator {
         Ranges.monthInMinutes.contains(interval)
     }
 
-    private func isValidUrlString(string: String) -> Bool {
+    private func isValidURLString(_ string: String) -> Bool {
         guard !string.isEmpty, let url = URL(string: string),
               let scheme = url.scheme, !scheme.isEmpty,
               let host = url.host, !host.isEmpty else { return false }
@@ -142,8 +142,8 @@ class RequiredParametersValidator {
     private func isValidValue(_ value: AnyObject, forParameter parameter: String) throws {
         let regex = ParametersRegex.regexForKey(parameter)
 
-        if isURLParameter(parameter: parameter) {
-            guard let url = value as? String, isValidUrlString(string: url) else {
+        if isURLParameter(parameter) {
+            guard let url = value as? String, isValidURLString(url) else {
                 throw GenesisValidationError.wrongValueForParameter(parameter, parameter)
             }
         } else if parameter == PropertyKeys.ThreeDSV2ParamsKey {

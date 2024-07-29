@@ -107,7 +107,7 @@ enum RequiredParameters {
         return Array(set)
     }
 
-    static func requiredParametersForTransactionType(transactionType: PaymentTransactionType) -> [String] {
+    static func requiredParametersForTransactionType(_ transactionType: PaymentTransactionType) -> [String] {
         switch transactionType.name {
         case .ppro:
             return [PropertyKeys.ProductNameKey,
@@ -122,8 +122,6 @@ enum RequiredParameters {
             return [PropertyKeys.OrderTaxAmountKey,
                     PropertyKeys.CustomerGenderKey,
                     PropertyKeys.ItemsKey]
-        case .authorize, .authorize3d, .sale, .sale3d:
-            return [PropertyKeys.RecurringTypeKey]
         default:
             return []
         }
@@ -149,10 +147,6 @@ enum RequiredParameters {
 
         if [.authorize3d, .sale3d, .initRecurringSale3d].contains(transactionName) {
             requiredParameters.append(PropertyKeys.ThreeDSV2ParamsKey)
-        }
-
-        if [.initRecurringSale, .initRecurringSale3d].contains(transactionName) {
-            requiredParameters.append(PropertyKeys.RecurringCategoryKey)
         }
 
         if [.applePay].contains(transactionName) {

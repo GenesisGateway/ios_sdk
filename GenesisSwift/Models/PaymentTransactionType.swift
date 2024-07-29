@@ -132,10 +132,9 @@ public final class PaymentTransactionType {
 extension PaymentTransactionType: ValidateInputDataProtocol {
 
     public func isValidData() throws {
-        let requiredParameters = RequiredParameters.requiredParametersForTransactionType(transactionType: self)
+        let requiredParameters = RequiredParameters.requiredParametersForTransactionType(self)
         let validator = RequiredParametersValidator(withRequiredParameters: requiredParameters)
-
-        try validator.isValidTransactionType(transactionType: self)
+        try validator.validateTransactionType(self)
     }
 }
 

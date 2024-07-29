@@ -156,8 +156,9 @@ extension TransactionDetailsViewController: GenesisDelegate {
     }
 
     func genesisDidEndWithSuccess(userInfo: [AnyHashable: Any]) {
-        let uniqueId = userInfo[GenesisInfoKeys.uniqueId]!
-        presentAlertWithTitle("Success", andMessage: "Success transaction: \(uniqueId)")
+        if let uniqueId = userInfo[GenesisInfoKeys.uniqueId] {
+            presentAlertWithTitle("Success", andMessage: "Success transaction: \(uniqueId)")
+        }
     }
 
     func genesisDidEndWithFailure(userInfo: [AnyHashable: Any], errorCode: GenesisError) {
