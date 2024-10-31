@@ -30,6 +30,7 @@
 		2ED2D434206D10ED00C792C8 /* RequiredParametersValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2D433206D10ED00C792C8 /* RequiredParametersValidator.swift */; };
 		2EF574FD206BA0BD00C91DEA /* RequiredParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF574FC206BA0BD00C91DEA /* RequiredParameters.swift */; };
 		2EF57501206BCEB200C91DEA /* ParametersRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF57500206BCEB200C91DEA /* ParametersRegex.swift */; };
+		56319FBB2CC8E71700F6F77D /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56319FBA2CC8E71700F6F77D /* Utils.swift */; };
 		56AFF29A28FD784F000C6720 /* RecurringParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29428FD784F000C6720 /* RecurringParams.swift */; };
 		56AFF29B28FD784F000C6720 /* MerchantRiskParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29528FD784F000C6720 /* MerchantRiskParams.swift */; };
 		56AFF29C28FD784F000C6720 /* CardHolderAccountParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AFF29628FD784F000C6720 /* CardHolderAccountParams.swift */; };
@@ -98,6 +99,7 @@
 		2ED2D433206D10ED00C792C8 /* RequiredParametersValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredParametersValidator.swift; sourceTree = "<group>"; };
 		2EF574FC206BA0BD00C91DEA /* RequiredParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredParameters.swift; sourceTree = "<group>"; };
 		2EF57500206BCEB200C91DEA /* ParametersRegex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersRegex.swift; sourceTree = "<group>"; };
+		56319FBA2CC8E71700F6F77D /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		56AFF29428FD784F000C6720 /* RecurringParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecurringParams.swift; sourceTree = "<group>"; };
 		56AFF29528FD784F000C6720 /* MerchantRiskParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MerchantRiskParams.swift; sourceTree = "<group>"; };
 		56AFF29628FD784F000C6720 /* CardHolderAccountParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardHolderAccountParams.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 				735425761F9F4E7D00C78058 /* PaymentTransactionTypeTest.swift */,
 				2D13FB4D1FBD0AD500E0E529 /* XMLRespose.xml */,
 				2E6B8F73205812CE00444D4B /* StringTests.swift */,
+				56319FBA2CC8E71700F6F77D /* Utils.swift */,
 			);
 			path = GenesisSwiftTests;
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				7354257D1F9F4E7D00C78058 /* PaymentTransactionTypeTest.swift in Sources */,
 				2D13FA9A1FB24F2500E0E529 /* CurrencyTest.swift in Sources */,
 				2E6B8F74205812CE00444D4B /* StringTests.swift in Sources */,
+				56319FBB2CC8E71700F6F77D /* Utils.swift in Sources */,
 				2ED2874B2040573F00B530B6 /* CredentialsTest.swift in Sources */,
 				2E9D2C4A204833240009FD06 /* GenesisTest.swift in Sources */,
 				7354257C1F9F4E7D00C78058 /* PaymentAddressTests.swift in Sources */,
@@ -669,7 +673,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				ONLY_ACTIVE_ARCH = NO;
@@ -707,7 +711,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = "";

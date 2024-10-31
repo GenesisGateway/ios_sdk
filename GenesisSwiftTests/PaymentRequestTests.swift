@@ -644,21 +644,11 @@ private extension PaymentRequestTests {
         let start = "Wrong value for "
         let end = "required parameter"
 
-        guard let params = valueBetween(start: start, end: end, in: errorMessage), !params.isEmpty else { return [] }
+        guard let params = Utils.valueBetween(start: start, end: end, in: errorMessage), !params.isEmpty else { return [] }
         return params.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
     }
 
-    func valueBetween(start: String, end: String, in text: String) -> String? {
-        guard let startIndex = text.range(of: start, options: .caseInsensitive)?.upperBound else { return nil }
-        guard let endIndex = text.range(of: end, options: .caseInsensitive)?.lowerBound else { return nil }
-        guard startIndex < endIndex else { return nil }
-
-        return String(text[startIndex..<endIndex])
-    }
-
     func xmlValue(inTag tag: String, from xml: String) -> String? {
-        let startTag = "<\(tag)>"
-        let endTag = "</\(tag)>"
-        return valueBetween(start: startTag, end: endTag, in: xml)
+        Utils.xmlValue(inTag: tag, from: xml)
     }
 }
